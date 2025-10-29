@@ -1,68 +1,126 @@
-# AppIntranet
+# AppIntranet – Guía para instalar y arrancar Capacitor (Android)
 
-**AppIntranet** es una aplicación móvil diseñada para la gestión interna de procesos, utilizando Capacitor para crear aplicaciones nativas para Android e iOS. Sigue estos pasos para ejecutar y probar el proyecto en tu entorno local.
+Esta guía explica cómo preparar el entorno, instalar dependencias, compilar el frontend y ejecutar la app Android con Capacitor en este proyecto.
 
-## Requisitos previos
+## 1) Requisitos
+- Node.js LTS y npm (recomendado Node 18 o 20)
+- Java JDK 17
+- Android Studio con Android SDK (Plataforma 33+ y herramientas) y un emulador o un dispositivo físico
+- Capacitor CLI (se usa vía `npx`)
 
-Antes de comenzar, asegúrate de tener los siguientes programas instalados:
+Verifica versiones:
+```bash
+node -v
+npm -v
+java -version
+```
 
-1. **Node.js** y **npm**:
-   - Descarga [Node.js](https://nodejs.org/), lo que también instalará npm, el gestor de dependencias.
-
-2. **Android Studio** o **Xcode** (dependiendo de tu sistema operativo):
-   - Android Studio es necesario para compilar y probar en dispositivos Android.
-   - Xcode es necesario si planeas probar en un dispositivo iOS (solo en macOS).
-
-3. **Capacitor CLI**:
-   Si no tienes Capacitor instalado, puedes agregarlo al proyecto ejecutando:
-   ```bash
-   npm install @capacitor/cli @capacitor/core
-Pasos para ejecutar el proyecto
-Sigue los pasos a continuación para clonar el repositorio, instalar las dependencias y ejecutar la aplicación con Capacitor.
-
-1. Clona el repositorio
-Clona el repositorio de AppIntranet desde GitHub a tu máquina local. Abre una terminal y ejecuta:
-
-bash
-Copiar código
+## 2) Clonar e instalar dependencias
+```bash
 git clone https://github.com/AlejandriaTI/AppIntranet.git
 cd AppIntranet
-2. Inicializa Capacitor en el proyecto
-Capacitor es la herramienta que permite crear aplicaciones nativas para Android e iOS. Para agregar Capacitor a tu proyecto, ejecuta:
+npm install
+```
 
-bash
-Copiar código
+Si ya estás en `intranet-movil`, solo ejecuta:
+```bash
+npm install
+```
+
+## 3) Configuración de entorno (Windows)
+Asegúrate de tener las variables de entorno configuradas:
+- JAVA_HOME apuntando a JDK 17
+- ANDROID_SDK_ROOT apuntando al directorio del SDK de Android
+
+Ejemplo en PowerShell (ajusta rutas):
+```powershell
+$env:JAVA_HOME="C:\\Program Files\\Java\\jdk-17"
+[Environment]::SetEnvironmentVariable("JAVA_HOME", $env:JAVA_HOME, "User")
+
+$env:ANDROID_SDK_ROOT="C:\\Users\\USER\\AppData\\Local\\Android\\Sdk"
+[Environment]::SetEnvironmentVariable("ANDROID_SDK_ROOT", $env:ANDROID_SDK_ROOT, "User")
+```
+Reinicia la terminal después de configurar.
+
+## 4) Inicialización de Capacitor (solo primera vez)
+El proyecto ya incluye `capacitor.config.ts`. Si necesitas inicializar Capacitor desde cero:
+```bash
 npx cap init
-Este comando creará un archivo de configuración llamado capacitor.config.ts, donde se almacenan los detalles del proyecto y la configuración de Capacitor.
-
-3. Añadir plataformas (Android)
-Para agregar la plataforma de Android, ejecuta:
-
-bash
-Copiar código
+```
+Luego añade Android (si aún no existe la carpeta `android/`):
+```bash
 npx cap add android
-Este comando crea los directorios android/ y ios/ (cuando agregues iOS) que contienen la estructura del proyecto nativo, donde podrás hacer configuraciones específicas para Android y iOS.
+```
 
-4. Construir el proyecto
-Antes de sincronizar y ejecutar la aplicación en un emulador o dispositivo, asegúrate de construir el proyecto web. Para hacerlo, ejecuta:
-
-bash
-Copiar código
+## 5) Build del frontend y sincronización con Android
+Cada vez que cambies el frontend y quieras reflejarlo en Android:
+```bash
 npm run build
-Este comando genera los archivos estáticos (HTML, CSS, JS) necesarios para la aplicación móvil.
+npx cap sync android
+```
+`npm run build` genera el contenido web y `npx cap sync android` copia los assets nativos y actualiza plugins.
 
-5. Sincronizar los cambios con Capacitor
-Después de agregar plataformas y realizar cualquier cambio en el código web, sincroniza los cambios con las plataformas nativas (Android/iOS) ejecutando:
-
-bash
-Copiar código
-npx cap sync
-Este comando copia los archivos necesarios del directorio web (www/) a las plataformas nativas y asegura que todo esté actualizado.
-
-6. Abrir el proyecto en Android Studio
-Para ejecutar la aplicación en un emulador de Android o en un dispositivo físico, abre el proyecto en Android Studio ejecutando:
-
-bash
-Copiar código
+## 6) Abrir en Android Studio y ejecutar
+```bash
 npx cap open android
-Este comando abrirá Android Studio, donde podrás compilar, ejecutar y probar la aplicación. Si ya tienes un emulador configurado, puedes seleccionarlo y ver la aplicación en ejecución.
+```
+Desde Android Studio:
+- Selecciona un dispositivo (emulador o físico con depuración USB)
+- Ejecuta ▶ (Run) para compilar e instalar
+
+## 7) Opción de Live Reload (opcional)
+Para desarrollar viendo cambios inmediatos:
+1. Inicia el servidor de desarrollo web:
+```bash
+npm run dev
+```
+2. En otra terminal, lanza la app con recarga en vivo (ajusta puerto si tu dev server usa otro):
+```bash
+npx cap run android --livereload --external --port 3000
+```
+Nota: Live Reload requiere que el dispositivo/emulador pueda acceder a tu IP local.
+
+## 8) Comandos útiles
+- Compilar web y sincronizar:
+```bash
+npm run build && npx cap sync android
+```
+- Abrir Android Studio:
+```bash
+npx cap open android
+```
+- Ejecutar en dispositivo (sin abrir Android Studio):
+```bash
+npx cap run android
+```
+- Sincronizar solo plugins/Android:
+```bash
+npx cap sync android
+```
+
+## 9) Limpieza de builds (Windows)
+Si algo falla en la compilación nativa, limpia y vuelve a sincronizar:
+```powershell
+cd android
+./gradlew.bat clean
+cd ..
+npx cap sync android
+```
+También puedes eliminar manualmente `android/app/build/` y repetir la sincronización.
+
+## 10) Solución de problemas comunes
+- JDK incompatible: configura JDK 17 en Android Studio (File > Settings > Build Tools > Gradle > Gradle JDK = 17)
+- SDK de Android faltante: abre Android Studio > SDK Manager e instala la plataforma requerida (API 33+)
+- Permisos en dispositivo: habilita “Depuración USB” en Opciones de desarrollador
+- Cambios en el frontend no aparecen: ejecuta `npm run build` y luego `npx cap sync android`
+- Plugins no copian: prueba `npx cap clean` y luego `npx cap sync`
+
+## 11) Flujo recomendado diario
+1. `npm run dev` para desarrollo web
+2. Para probar en Android:
+   - `npm run build`
+   - `npx cap sync android`
+   - `npx cap open android` y ejecutar desde Android Studio, o `npx cap run android`
+
+---
+Si necesitas soporte adicional con la configuración de Android Studio, JDK o SDK, indica tu versión de Windows, Node y Android Studio, junto con cualquier mensaje de error.
