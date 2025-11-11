@@ -8,10 +8,12 @@ import { AdvisorSubmissions } from "@/components/estudiantes/advisor-submissions
 
 export default function HomeEstudiante() {
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedAsesoriaId, setSelectedAsesoriaId] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
-    // Simulate data loading
-    const timer = setTimeout(() => setIsLoading(false), 2000);
+    const timer = setTimeout(() => setIsLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -19,13 +21,20 @@ export default function HomeEstudiante() {
     <section className="min-h-dvh bg-background">
       <Header isLoading={isLoading} />
       <div className="container mx-auto px-4 py-8 space-y-8">
-        <RecentNews isLoading={isLoading} />
+        <RecentNews />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1">
-            <Meetings isLoading={isLoading} />
+            <Meetings
+              isLoading={isLoading}
+              selectedAsesoriaId={selectedAsesoriaId}
+              setSelectedAsesoriaId={setSelectedAsesoriaId}
+            />
           </div>
           <div className="lg:col-span-2">
-            <AdvisorSubmissions isLoading={isLoading} />
+            <AdvisorSubmissions
+              isLoading={isLoading}
+              selectedAsesoriaId={selectedAsesoriaId}
+            />
           </div>
         </div>
       </div>

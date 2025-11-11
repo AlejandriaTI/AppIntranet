@@ -1,42 +1,54 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
-interface NewsItem {
+interface Noticia {
   id: number;
-  title: string;
-  image: string;
+  titulo: string;
+  descripcion: string;
+  imagen: string;
 }
 
-const newsItems: NewsItem[] = [
-  { id: 1, title: "Nuevo convenio con universidades internacionales", image: "/international-meeting.jpg" },
-  { id: 2, title: "Concurso de investigación 2025", image: "/research-competition.jpg" },
-  { id: 3, title: "Actualización en el reglamento de tesis", image: "/thesis-regulations.jpg" },
-  { id: 4, title: "Webinar sobre redacción académica", image: "/academic-writing.png" },
-  { id: 5, title: "Nuevo portal de biblioteca digital", image: "/digital-library.jpg" },
-  { id: 6, title: "Nuevo convenio con universidades internacionales", image: "/international-meeting.jpg" },
-];
+export function RecentNews() {
+  const [noticias, setNoticias] = useState<Noticia[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedNoticia, setSelectedNoticia] = useState<Noticia | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-interface RecentNewsProps {
-  isLoading: boolean;
-}
+  useEffect(() => {
+    const fetchNoticias = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/recursos/noticias/all`
+        );
+        if (!res.ok) throw new Error("Error al obtener noticias");
+        const data = await res.json();
+        if (Array.isArray(data)) setNoticias(data);
+      } catch (error) {
+        console.error("Error al obtener noticias recientes:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNoticias();
+  }, []);
 
-export function RecentNews({ isLoading }: RecentNewsProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const handlePrev = () => {
-    setCurrentIndex((prev) => (prev === 0 ? newsItems.length - 1 : prev - 1));
+  const handleScroll = (direction: "left" | "right") => {
+    if (!scrollRef.current) return;
+    const scrollAmount = scrollRef.current.offsetWidth * 0.9; // desplaza casi un ancho visible
+    scrollRef.current.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
+    });
   };
 
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev === newsItems.length - 1 ? 0 : prev + 1));
-  };
-
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="space-y-4 w-full">
         <h2 className="text-2xl font-bold">Noticias Recientes</h2>
@@ -49,52 +61,104 @@ export function RecentNews({ isLoading }: RecentNewsProps) {
     );
   }
 
+  if (!noticias.length) {
+    return (
+      <p className="text-muted-foreground text-sm">
+        No hay noticias disponibles por el momento.
+      </p>
+    );
+  }
+
   return (
-    <div className="space-y-4 w-full">
+    <div className="space-y-4 w-full relative">
       <h2 className="text-2xl font-bold">Noticias Recientes</h2>
 
+      {/* Carrusel controlado */}
       <div className="relative w-full">
-        {/* Contenedor que limita el ancho */}
-        <div className="flex w-full gap-4 overflow-x-auto overflow-y-hidden pb-2 scroll-smooth snap-x snap-mandatory">
-          {newsItems.map((item, index) => (
+        <div
+          ref={scrollRef}
+          className="flex w-full gap-4 overflow-hidden pb-2 scroll-smooth snap-x snap-mandatory"
+        >
+          {noticias.map((item) => (
             <Card
               key={item.id}
-              className={`shrink-0 snap-start w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 overflow-hidden transition-all duration-300 cursor-pointer ${
-                index === currentIndex ? "opacity-100" : "opacity-70"
-              }`}
+              onClick={() => setSelectedNoticia(item)}
+              className="shrink-0 snap-start w-[280px] sm:w-[320px] lg:w-[350px] overflow-hidden transition-all duration-300 cursor-pointer hover:shadow-lg hover:scale-[1.02]"
             >
               <img
-                src={item.image || "/placeholder.svg"}
-                alt={item.title}
+                src={item.imagen || "/placeholder.svg"}
+                alt={item.titulo}
                 className="w-full h-40 object-cover"
               />
-              <div className="p-4 bg-primary text-primary-foreground">
-                <p className="text-sm font-medium line-clamp-2">{item.title}</p>
-                <button className="text-xs mt-2 opacity-75 hover:opacity-100">ver →</button>
-              </div>
+              <CardContent className="p-4 bg-primary text-primary-foreground">
+                <p className="text-sm font-medium line-clamp-2">
+                  {item.titulo}
+                </p>
+                <span className="text-xs mt-2 opacity-75 hover:opacity-100">
+                  Ver más →
+                </span>
+              </CardContent>
             </Card>
           ))}
         </div>
 
         {/* Botones de navegación */}
-        <Button
-          variant="outline"
-          size="icon"
-          className="absolute left-2 top-1/2 -translate-y-1/2 hidden md:flex bg-background/80 hover:bg-background"
-          onClick={handlePrev}
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
+        {noticias.length > 1 && (
+          <>
+            <Button
+              variant="outline"
+              size="icon"
+              className="absolute left-0 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background rounded-full shadow-sm"
+              onClick={() => handleScroll("left")}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
 
-        <Button
-          variant="outline"
-          size="icon"
-          className="absolute right-2 top-1/2 -translate-y-1/2 hidden md:flex bg-background/80 hover:bg-background"
-          onClick={handleNext}
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="absolute right-0 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background rounded-full shadow-sm"
+              onClick={() => handleScroll("right")}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </>
+        )}
       </div>
+
+      {/* Modal elegante tipo tarjeta */}
+      <Dialog
+        open={!!selectedNoticia}
+        onOpenChange={() => setSelectedNoticia(null)}
+      >
+        <DialogContent className="max-w-[550px] w-[90vw] p-0 rounded-2xl shadow-xl border border-border/40 overflow-hidden">
+          {selectedNoticia && (
+            <div className="flex flex-col sm:flex-row bg-background">
+              {/* Imagen vertical */}
+              <div className="sm:w-[180px] w-full h-[220px] sm:h-auto overflow-hidden">
+                <img
+                  src={selectedNoticia.imagen}
+                  alt={selectedNoticia.titulo}
+                  className="object-cover w-full h-full sm:rounded-l-2xl"
+                />
+              </div>
+
+              {/* Texto alineado */}
+              <div className="flex flex-col justify-center p-6 sm:w-[calc(100%-180px)]">
+                <h3 className="text-lg font-semibold text-foreground leading-snug">
+                  {selectedNoticia.titulo}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1 mb-3">
+                  Noticia destacada de Alejandría Consultores
+                </p>
+                <p className="text-sm text-foreground leading-relaxed mb-6">
+                  {selectedNoticia.descripcion}
+                </p>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

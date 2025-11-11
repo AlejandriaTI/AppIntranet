@@ -15,6 +15,7 @@ import { mapLoginResponseToUserData } from "@/services/interface/auth";
 import { LINKS } from "@/constants/links"; // 👈 importa el objeto LINKS
 import { restoreSession } from "@/store/auth/authSlice";
 import { loadAuthData } from "@/services/storage/authStorage";
+import { motion } from "framer-motion";
 
 export default function LoginPage() {
   const dispatch = useDispatch();
@@ -44,6 +45,11 @@ export default function LoginPage() {
   }, [dispatch, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log(
+      "🔎 ENV NEXT_PUBLIC_API_BASE_URL:",
+      process.env.NEXT_PUBLIC_API_BASE_URL
+    );
+
     e.preventDefault();
     setError("");
     setIsLoading(true);
@@ -63,6 +69,10 @@ export default function LoginPage() {
       if (!datosUsuario || !token) {
         throw new Error("Respuesta inválida del servidor");
       }
+      console.log(
+        "🔎 ENV NEXT_PUBLIC_API_BASE_URL:",
+        process.env.NEXT_PUBLIC_API_BASE_URL
+      );
 
       // Guardar en Redux
       dispatch(
@@ -100,9 +110,13 @@ export default function LoginPage() {
       </div>
 
       <div className="w-full flex justify-center px-4 relative z-10">
-        <form
+        <motion.form
           onSubmit={handleSubmit}
           className="flex w-full max-w-[410px] flex-col justify-center items-center gap-10 bg-slate-800/50 backdrop-blur-sm p-8 rounded-2xl border border-slate-700/50"
+          initial={{ opacity: 0 }} // Estado inicial
+          animate={{ opacity: 1 }} // Estado final
+          exit={{ opacity: 0 }} // Estado de salida
+          transition={{ duration: 1 }} // Duración de la animación
         >
           {/* Logo */}
           <div className="w-32 h-32 flex items-center justify-center">
@@ -240,14 +254,11 @@ export default function LoginPage() {
             </Button>
 
             {/* Recuperar contraseña */}
-            <Link
-              href="/recuperar-contrasena"
-              className="text-slate-300 text-sm hover:text-white transition"
-            >
+            <span className="text-slate-300 text-sm opacity-60 cursor-not-allowed">
               ¿OLVIDÓ SU CONTRASEÑA?
-            </Link>
+            </span>
           </div>
-        </form>
+        </motion.form>
       </div>
     </main>
   );

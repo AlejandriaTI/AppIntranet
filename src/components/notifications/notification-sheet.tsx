@@ -20,41 +20,26 @@ import {
 
 import { notificationServices } from "@/services/api/notification.services";
 import type { Notification, User } from "@/services/interface/notification";
+import { loadAuthData } from "@/services/storage/authStorage";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 export const NotificationSheet: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [user, setUser] = useState<User | null>(null);
+  const user = useSelector((state: RootState) => state.auth.user);
+  const idCliente = user?.id_cliente;
 
   useEffect(() => {
-    const loadUser = () => {
-      try {
-        const stored = localStorage.getItem("user");
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          setTimeout(() => {
-            setUser(parsed);
-          }, 0);
-        }
-      } catch (e) {
-        console.error("❌ Error al leer user de localStorage:", e);
-      }
-    };
-
-    loadUser();
-  }, []);
-
-  // Obtener notificaciones desde el servicio
-  useEffect(() => {
-    const fetchData = async () => {
+    const fetchNotifications = async () => {
       if (!user) return;
+
       const data = await notificationServices.getUserNotifications(user);
       setNotifications(data);
     };
 
-    fetchData();
-  }, [user]);
+    fetchNotifications();
+  }, [user]); // solo carga cuando el usuario actual cambia
 
-  // Marcar notificación como leída
   const onMarkAsRead = async (id: number) => {
     await notificationServices.markAsRead(id);
     setNotifications((prev) =>
@@ -64,7 +49,20 @@ export const NotificationSheet: React.FC = () => {
 
   const unreadCount = notifications.filter((n) => !n.leida).length;
 
-  // Agrupar por fecha
+  const renderIcon = (tipo: string) => {
+    switch (tipo) {
+      case "avance_actualizado":
+        return <FileText size={18} />;
+      case "avance_enviado":
+        return <Paperclip size={18} />;
+      case "nuevo_avance":
+        return <MessageCircle size={18} />;
+      default:
+        return <Circle size={8} />;
+    }
+  };
+
+  // 🔹 Agrupación por fecha
   const notificacionesAgrupadas = notifications
     .filter(
       (n) => n.fecha_creacion && !isNaN(new Date(n.fecha_creacion).getTime())
@@ -76,27 +74,15 @@ export const NotificationSheet: React.FC = () => {
     )
     .reduce<Record<string, Notification[]>>((acc, noti) => {
       const fecha = new Date(noti.fecha_creacion);
-      const dia = fecha.getDate().toString().padStart(2, "0");
-      const mes = fecha.toLocaleString("es-ES", { month: "long" });
-      const año = fecha.getFullYear();
-      const clave = `${dia} ${mes} ${año}`;
+      const clave = fecha.toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      });
       if (!acc[clave]) acc[clave] = [];
       acc[clave].push(noti);
       return acc;
     }, {});
-
-  const renderIcon = (tipo: string) => {
-    switch (tipo) {
-      case "avance_actualizado":
-        return <FileText size={16} />;
-      case "avance_enviado":
-        return <Paperclip size={16} />;
-      case "nuevo_avance":
-        return <MessageCircle size={16} />;
-      default:
-        return <Circle size={8} />;
-    }
-  };
 
   return (
     <Sheet>
@@ -113,51 +99,120 @@ export const NotificationSheet: React.FC = () => {
           )}
         </Button>
       </SheetTrigger>
-
-      <SheetContent side="right" className="w-[360px] sm:w-[420px] p-0">
-        <SheetHeader className="px-6 py-4 border-b border-border">
+      <SheetContent
+        side="right"
+        className="
+    bg-white p-0 
+    w-[80vw]             /* 📱 75% del ancho en pantallas pequeñas */
+    sm:w-[400px]         /* 💻 ancho moderado en escritorio */
+    md:w-[420px]
+    max-w-full
+    shadow-2xl           /* 💫 sombra elegante */
+    border-l border-gray-200
+    transition-all duration-300 ease-in-out
+  "
+      >
+        {/* 🔹 Encabezado */}
+        <SheetHeader className="px-6 py-4 border-b sticky top-0 z-10">
           <div className="flex items-center justify-between">
-            <SheetTitle className="text-base font-medium">
+            <SheetTitle className="text-base font-semibold text-gray-800">
               Notificaciones
             </SheetTitle>
+            {unreadCount > 0 && (
+              <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-md">
+                {unreadCount} nuevas
+              </span>
+            )}
           </div>
         </SheetHeader>
 
+        {/* 🔹 Contenido */}
         <div className="max-h-[calc(100vh-80px)] overflow-y-auto">
           {Object.keys(notificacionesAgrupadas).length > 0 ? (
             <div className="divide-y divide-border">
               {Object.entries(notificacionesAgrupadas).map(
                 ([fecha, notisDelDia]) => (
                   <div key={fecha}>
-                    <div className="px-6 py-3 bg-muted/30">
-                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                    {/* 🗓 Fecha */}
+                    <div className="px-6 py-2 sticky top-0 z-10">
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
                         {fecha}
                       </p>
                     </div>
-                    <div className="divide-y divide-border">
+
+                    {/* 🔔 Lista de notificaciones */}
+                    <div className="divide-y divide-gray-100">
                       {notisDelDia.map((n) => (
                         <div
                           key={n.id}
                           onClick={() => onMarkAsRead(n.id)}
-                          className={`px-6 py-4 cursor-pointer flex items-start gap-3 transition-all border-l-2 ${
+                          className={`flex items-start gap-3 px-5 py-4 transition-all cursor-pointer ${
                             n.leida
-                              ? "border-l-transparent hover:bg-muted/20"
-                              : "border-l-blue-600 bg-muted/30 hover:bg-muted/40"
+                              ? "bg-white hover:bg-gray-50"
+                              : "bg-blue-50/50"
                           }`}
                         >
-                          <div className="mt-0.5 shrink-0">
+                          {/* Ícono principal */}
+                          <div
+                            className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
+                              n.leida
+                                ? "bg-gray-100 text-gray-500"
+                                : "bg-blue-100 text-blue-600"
+                            }`}
+                          >
                             {renderIcon(n.tipo)}
                           </div>
+
+                          {/* Texto */}
                           <div className="flex-1 min-w-0">
+                            <div className="flex justify-between items-start">
+                              <p className="text-sm font-semibold text-gray-900 truncate">
+                                Sistema Alejandría
+                              </p>
+                              <div className="flex items-center gap-1">
+                                {!n.leida && (
+                                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                                )}
+                                <p className="text-xs text-gray-400 whitespace-nowrap">
+                                  {new Date(
+                                    n.fecha_creacion
+                                  ).toLocaleTimeString("es-PE", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Mensaje */}
                             <p
-                              className={`text-sm leading-relaxed ${
+                              className={`mt-1 text-sm ${
                                 n.leida
-                                  ? "text-muted-foreground"
-                                  : "text-foreground font-medium"
+                                  ? "text-gray-600"
+                                  : "text-gray-800 font-medium"
                               }`}
                             >
                               {n.mensaje}
                             </p>
+
+                            {/* Acciones opcionales */}
+                            {n.tipo === "solicitud" && (
+                              <div className="mt-3 flex gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-xs px-3 py-1 border-gray-300 text-gray-600 hover:bg-gray-100"
+                                >
+                                  Cancelar
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  className="text-xs px-3 py-1 bg-blue-600 hover:bg-blue-700"
+                                >
+                                  Aprobar
+                                </Button>
+                              </div>
+                            )}
                           </div>
                         </div>
                       ))}
@@ -167,9 +222,14 @@ export const NotificationSheet: React.FC = () => {
               )}
             </div>
           ) : (
-            <div className="flex flex-col justify-center items-center text-center text-muted-foreground py-16 px-6">
-              <BellOff size={40} className="mb-3 opacity-50" />
-              <p className="text-sm">No hay notificaciones</p>
+            <div className="flex flex-col justify-center items-center text-center text-gray-500 py-16 px-6">
+              <div className="p-4 bg-gray-100 rounded-full mb-3">
+                <BellOff size={30} className="text-gray-400" />
+              </div>
+              <p className="text-sm font-medium">No hay notificaciones</p>
+              <p className="text-xs text-gray-400 mt-1">
+                Estás al día con todo 🎉
+              </p>
             </div>
           )}
         </div>

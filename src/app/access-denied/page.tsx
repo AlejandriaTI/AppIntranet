@@ -2,7 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import { ShieldAlert } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
@@ -40,7 +46,6 @@ export default function AccessDeniedPage() {
             >
               Volver atrás
             </Button>
-
           </CardFooter>
         </Card>
       </motion.div>

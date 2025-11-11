@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { UserData } from "@/services/interface/auth";
 import { saveAuthData, clearAuthData } from "@/services/storage/authStorage"; // 👈 importar
-import { Preferences } from "@capacitor/preferences";
 
 export interface AuthState {
   user: UserData | null;

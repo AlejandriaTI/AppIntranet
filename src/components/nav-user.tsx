@@ -1,12 +1,12 @@
 "use client";
 
 import {
-  BadgeCheck,
-  Bell,
+  User,
+  GraduationCap,
+  FileText,
+  KeyRound,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -25,6 +25,10 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import getInitials from "@/utils/getInitials";
+import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { logout } from "@/store/auth/authSlice";
+import { useRouter } from "next/navigation";
 
 export function NavUser({
   user,
@@ -33,10 +37,18 @@ export function NavUser({
     name: string;
     email: string;
     avatar?: string;
+    rol?: string; // <-- AÑADIR
   };
 }) {
   const { isMobile } = useSidebar();
   const initials = getInitials(user.name);
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    dispatch(logout()); // ✅ Limpia Redux + Preferences
+    router.push("/"); // ✅ Redirige
+  };
 
   return (
     <SidebarMenu>
@@ -95,24 +107,60 @@ export function NavUser({
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Cuenta
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Facturación
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notificaciones
-              </DropdownMenuItem>
+              {["alumno", "cliente", "estudiante"].includes(
+                user?.rol ?? ""
+              ) && (
+                <>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/dashboard/estudiante/perfil"
+                      className="flex items-center gap-2"
+                    >
+                      <User />
+                      Mi perfil
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/dashboard/estudiante/asesor"
+                      className="flex items-center gap-2"
+                    >
+                      <GraduationCap />
+                      Mi asesor
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/dashboard/estudiante/contrato"
+                      className="flex items-center gap-2"
+                    >
+                      <FileText />
+                      Mi contrato
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/dashboard/estudiante/contrasena"
+                      className="flex items-center gap-2"
+                    >
+                      <KeyRound />
+                      Cambiar Contraseña
+                    </Link>
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem>
-              <LogOut />
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="text-red-600 focus:text-red-600 cursor-pointer"
+            >
+              <LogOut className="text-red-600" />
               Cerrar sesión
             </DropdownMenuItem>
           </DropdownMenuContent>

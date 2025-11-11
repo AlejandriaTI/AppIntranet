@@ -112,9 +112,9 @@ export default function DashboardLayout({
     >
       <SidebarProvider>
         <AppSidebar />
-        <SidebarInset className="flex flex-col min-h-dvh">
+        <SidebarInset className="grid min-h-dvh grid-rows-[auto_1fr]">
           {/* HEADER */}
-          <header className="sticky top-0 z-40 flex h-16 items-center gap-2 border-b bg-background px-4 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+          <header className="sticky top-0 z-40 flex h-16 items-center gap-2 border-b bg-background px-4 backdrop-blur supports-backdrop-filter:bg-background/80">
             <div className="flex items-center gap-3">
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="h-6 mx-2" />
@@ -130,8 +130,7 @@ export default function DashboardLayout({
             <HeaderActions />
           </header>
 
-          {/* CONTENIDO */}
-          <main className="flex-1 overflow-auto bg-background px-4 pb-4 pt-2">
+          <main className="overflow-auto bg-background px-4 pb-4 pt-2">
             {children}
           </main>
 

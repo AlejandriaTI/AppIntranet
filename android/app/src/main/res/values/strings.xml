@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">intranet-movil</string>
-    <string name="title_activity_main">intranet-movil</string>
+    <string name="app_name">Portal Alejandria</string>
+    <string name="title_activity_main">Portal Alejandria</string>
     <string name="package_name">com.aleja.pe</string>
     <string name="custom_url_scheme">com.aleja.pe</string>
 </resources>

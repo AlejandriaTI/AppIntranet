@@ -1,18 +1,22 @@
 import type { NextConfig } from "next";
 
-// Extendemos el tipo con allowedDevOrigins
-type ExtendedNextConfig = NextConfig & {
-  allowedDevOrigins?: string[];
-};
-
-const nextConfig: ExtendedNextConfig = {
+const nextConfig: NextConfig = {
+  // ✅ Export estático para Capacitor
   output: "export",
+
+  // ✅ IMPORTANTÍSIMO para Android
   images: {
     unoptimized: true,
   },
-  reactStrictMode: true,
+
+  reactStrictMode: false, // ⚠️ En móviles esto causa warnings molestos
+
+  // ✅ Mantiene las rutas correctas dentro de Android
   trailingSlash: true,
-  allowedDevOrigins: ["http://192.168.1.39"],
+
+  // ✅ Permitir acceso desde IP local durante desarrollo
+  // (esto NO lo usa Next de forma nativa, así que no afecta nada)
+  // Si querés usarlo realmente hay que hacer un middleware.
 };
 
 export default nextConfig;

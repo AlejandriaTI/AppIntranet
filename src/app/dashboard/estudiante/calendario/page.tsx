@@ -23,6 +23,9 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { calendarioServices } from "@/services/api/calendario.services";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { useAsesorias } from "@/hooks/useAsesoria";
 
 interface DayData {
   day: number;
@@ -54,12 +57,7 @@ export default function CalendarioEstudiante() {
   const [calendarDays, setCalendarDays] = useState<DayData[]>([]);
   const [monthName, setMonthName] = useState("");
   const [dayName, setDayName] = useState("");
-  const [selectedAsesoriaId, setSelectedAsesoriaId] = useState<number | null>(
-    null
-  );
-  const [asesorias, setAsesorias] = useState<
-    Array<{ id: number; profesion: string }>
-  >([]);
+
   const [eventos, setEventos] = useState<{
     reuniones: CalendarioEvento[];
     contratos: CalendarioEvento[];
@@ -70,26 +68,39 @@ export default function CalendarioEstudiante() {
     asuntos: [],
   });
 
-  const [eventosDia, setEventosDia] = useState<CalendarioEvento[]>([]);
-const months = useMemo(
-  () => [
-    "Enero",
-    "Febrero",
-    "Marzo",
-    "Abril",
-    "Mayo",
-    "Junio",
-    "Julio",
-    "Agosto",
-    "Septiembre",
-    "Octubre",
-    "Noviembre",
-    "Diciembre",
-  ],
-  []
-);
+  const user = useSelector((state: RootState) => state.auth.user);
+  const idCliente = user?.id_cliente;
+  const {
+    asesorias,
+    loading,
+    error,
+    selectedAsesoriaId,
+    setSelectedAsesoriaId,
+  } = useAsesorias(idCliente);
 
-const daysOfWeek = useMemo(() => ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"], []);
+  const [eventosDia, setEventosDia] = useState<CalendarioEvento[]>([]);
+  const months = useMemo(
+    () => [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre",
+    ],
+    []
+  );
+
+  const daysOfWeek = useMemo(
+    () => ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+    []
+  );
   // ✅ Funciones definidas antes de uso
   const updateSelectedDayInfo = useCallback(
     (day: number) => {
@@ -211,20 +222,6 @@ const daysOfWeek = useMemo(() => ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "D
     setMonthName(months[selectedMonth]);
     updateSelectedDayInfo(selectedDay);
   }, [selectedMonth, selectedYear, selectedDay, months, updateSelectedDayInfo]);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      const mockAsesorias = [
-        { id: 1, profesion: "Asesoría Legal" },
-        { id: 2, profesion: "Asesoría Financiera" },
-        { id: 3, profesion: "Asesoría Técnica" },
-      ];
-      setAsesorias(mockAsesorias);
-      setSelectedAsesoriaId(mockAsesorias[0].id);
-    }, 0);
-
-    return () => clearTimeout(timeout);
-  }, []);
 
   // 🔵 Cargar eventos reales del servicio
   useEffect(() => {
@@ -607,10 +604,10 @@ const daysOfWeek = useMemo(() => ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "D
                   Asesoría
                 </Label>
                 <Select
-                  value={selectedAsesoriaId?.toString() ?? ""}
+                  value={selectedAsesoriaId ? String(selectedAsesoriaId) : ""}
                   onValueChange={(value) =>
                     setSelectedAsesoriaId(Number(value))
-                  }
+                  } // 👈 conversión segura
                 >
                   <SelectTrigger
                     id="asesoria"

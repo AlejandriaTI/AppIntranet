@@ -27,7 +27,11 @@ import {
 export const LINKS: Record<string, NavLink[]> = {
   asesor: [
     { icono: Home, path: "/dashboard/asesor/home", title: "Home" },
-    { icono: Video, path: "/dashboard/asesor/reuniones", title: "Zoom / Inducciones" },
+    {
+      icono: Video,
+      path: "/dashboard/asesor/reuniones",
+      title: "Zoom / Inducciones",
+    },
     {
       icono: FileText,
       path: "/dashboard/asesor/entrega",
@@ -37,17 +41,29 @@ export const LINKS: Record<string, NavLink[]> = {
         { path: "/dashboard/asesor/entrega/pendientes" },
       ],
     },
-    { icono: Calendar, path: "/dashboard/asesor/calendario", title: "Calendario" },
+    {
+      icono: Calendar,
+      path: "/dashboard/asesor/calendario",
+      title: "Calendario",
+    },
     {
       icono: Users,
       path: "/dashboard/asesor/gestionarAlumno",
       title: "Gestionar Clientes",
     },
-    { icono: GraduationCap, path: "/dashboard/asesor/inducciones", title: "Inducciones" },
+    {
+      icono: GraduationCap,
+      path: "/dashboard/asesor/inducciones",
+      title: "Inducciones",
+    },
   ],
 
   contabilidad: [
-    { icono: Briefcase, path: "/dashboard/cont-pago/contratos", title: "Contratos" },
+    {
+      icono: Briefcase,
+      path: "/dashboard/cont-pago/contratos",
+      title: "Contratos",
+    },
     { icono: DollarSign, path: "/dashboard/cont-pago/pagos", title: "Pagos" },
   ],
 
@@ -60,17 +76,25 @@ export const LINKS: Record<string, NavLink[]> = {
     },
     {
       icono: FileText,
-      path: "/dashboardestudiante/entrega",
+      path: "/dashboard/estudiante/entrega",
       title: "Entrega / Revisión",
-      subLinks: [
-        { path: "/dashboard/estudiante/entrega/terminados" },
-        { path: "/dashboard/estudiante/entrega/pendientes" },
-      ],
     },
-    { icono: Calendar, path: "/dashboard/estudiante/calendario", title: "Calendario" },
-    { icono: BookOpen, path: "/dashboard/estudiante/recursos", title: "Recursos" },
+    {
+      icono: Calendar,
+      path: "/dashboard/estudiante/calendario",
+      title: "Calendario",
+    },
+    {
+      icono: BookOpen,
+      path: "/dashboard/estudiante/recursos",
+      title: "Recursos",
+    },
     { icono: DollarSign, path: "/dashboard/estudiante/pagos", title: "Pagos" },
-    { icono: LifeBuoy, path: "/dashboard/estudiante/soporte", title: "Soporte" },
+    {
+      icono: LifeBuoy,
+      path: "/dashboard/estudiante/soporte",
+      title: "Soporte",
+    },
   ],
 
   jefeOperaciones: [
@@ -95,7 +119,11 @@ export const LINKS: Record<string, NavLink[]> = {
   ],
 
   soporte: [
-    { icono: MonitorCog, path: "/dashboard/soporte-ti", title: "Gestión de Soporte" },
+    {
+      icono: MonitorCog,
+      path: "/dashboard/soporte-ti",
+      title: "Gestión de Soporte",
+    },
   ],
 
   supervisor: [
