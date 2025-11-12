@@ -20,7 +20,7 @@ const Splash = () => {
   }
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="flex justify-center items-center h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900">
       {" "}
       {/* Fondo degradado */}
       {/* Usamos motion.div para la animación */}

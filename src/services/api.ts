@@ -11,7 +11,7 @@ const WEB_API = process.env.NEXT_PUBLIC_WEB_API_URL; // Ej: http://localhost:300
 const BASE_API = process.env.NEXT_PUBLIC_API_BASE_URL; // fallback general
 
 // ✅ Fallback manual (por si .env no se inyecta en móvil)
-const LOCAL_FALLBACK = "http://192.168.1.46:3001";
+const LOCAL_FALLBACK = "https://api.alejandriaconsultora.com";
 
 // 🧩 Selección de URL según entorno
 const baseURL = (isNative ? MOBILE_API : WEB_API || BASE_API) || LOCAL_FALLBACK;

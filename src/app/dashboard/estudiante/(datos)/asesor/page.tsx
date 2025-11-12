@@ -39,24 +39,28 @@ export default function MiAsesor() {
 
   // ✅ Lista de imágenes en /public
   const asesorImagenes: AsesorImagen[] = [
-    { nombre: "Diana Alexandra", imagen: "/perfil-asesores/Diana.png" },
-    { nombre: "Victor Alfonso", imagen: "/perfil-asesores/Victor.png" },
-    { nombre: "Hebert Wilder", imagen: "/perfil-asesores/Heber.jpeg" },
-    { nombre: "Christian Alexis", imagen: "/perfil-asesores/Christian.jpeg" },
-    { nombre: "Antony", imagen: "/perfil-asesores/Antony.png" },
-    { nombre: "Brenda Lucia", imagen: "/perfil-asesores/Brenda.jpg" },
-    { nombre: "Olenka Ethel", imagen: "/perfil-asesores/Olenka.jpg" },
+    { nombre: "Diana Alexandra", imagen: "/Perfil-asesores/Diana.png" },
+    { nombre: "Victor Alfonso", imagen: "/Perfil-asesores/Victor.png" },
+    { nombre: "Hebert Wilder", imagen: "/Perfil-asesores/Heber.jpeg" },
+    { nombre: "Christian Alexis", imagen: "/Perfil-asesores/Christian.jpeg" },
+    { nombre: "Antony", imagen: "/Perfil-asesores/Antony.png" },
+    { nombre: "Brenda Lucia", imagen: "/Perfil-asesores/Brenda.jpg" },
+    { nombre: "Olenka Ethel", imagen: "/Perfil-asesores/Olenka.jpg" },
     {
       nombre: "Daniel Emmerson",
-      imagen: "/perfil-asesores/DanielDominguez.png",
+      imagen: "/Perfil-asesores/DanielDominguez.png",
     },
-    { nombre: "Haider Dante", imagen: "/perfil-asesores/Haider.png" },
-    { nombre: "Lidia Balbina", imagen: "/perfil-asesores/Lidia.png" },
+    { nombre: "Haider Dante", imagen: "/Perfil-asesores/Haider.png" },
+    { nombre: "Lidia Balbina", imagen: "/Perfil-asesores/Lidia.png" },
   ];
 
-  // ✅ Fallback dinámico
   const getImagenAsesor = (nombre?: string): string | null => {
-    const encontrado = asesorImagenes.find((a) => a.nombre === nombre);
+    if (!nombre) return null;
+
+    const encontrado = asesorImagenes.find((a) =>
+      nombre.toLowerCase().includes(a.nombre.toLowerCase())
+    );
+
     return encontrado ? encontrado.imagen : null;
   };
 
@@ -131,7 +135,6 @@ export default function MiAsesor() {
           </p>
         )}
       </CardContent>
-      
     </Card>
   );
 }

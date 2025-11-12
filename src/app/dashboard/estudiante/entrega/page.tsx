@@ -69,8 +69,8 @@ export default function DeliveriesPage() {
   const handleEditSubject = (id: string) => console.log("Editar asunto:", id);
   const handleDeleteSubject = (id: string) =>
     console.log("Eliminar asunto:", id);
-  const handleDownload = (url: string, name: string) =>
-    window.open(url, "_blank");
+
+  const handleDownload = (url: string) => window.open(url, "_blank");
 
   // 🔎 Filtro dinámico por texto + estado
   const filteredSubjects = subjects.filter((s) => {
@@ -86,8 +86,10 @@ export default function DeliveriesPage() {
 
   return (
     <main className="container mx-auto py-8 px-4 space-y-8">
-      <DeliveryHeader onNewClick={() => {}} showNewButton={true} />
-
+      <DeliveryHeader
+        asesoriaId={selectedAsesoriaId ?? 0}
+        showNewButton={!!selectedAsesoriaId} // solo se muestra si hay asesoría elegida
+      />
       {/* 🎓 Selección de asesoría */}
       <Card className="p-6">
         <div className="space-y-4">
@@ -133,7 +135,9 @@ export default function DeliveriesPage() {
 
                   <Select
                     value={filterStatus}
-                    onValueChange={(v: any) => setFilterStatus(v)}
+                    onValueChange={(v) =>
+                      setFilterStatus(v as typeof filterStatus)
+                    }
                   >
                     <SelectTrigger className="w-[110px] text-sm">
                       <SelectValue placeholder="Todos" />

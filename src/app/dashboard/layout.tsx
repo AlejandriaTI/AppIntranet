@@ -124,7 +124,16 @@ export default function DashboardLayout({
                 width={750}
                 height={300}
                 priority
-                className="w-[130px] h-auto object-contain dark:invert-0"
+                className="w-[130px] h-auto object-contain block dark:hidden"
+              />
+              <Separator orientation="vertical" className="h-6 mx-2" />
+              <Image
+                src="/logo/alejandria_logo.png"
+                alt="Logo Alejandría Consultores"
+                width={750}
+                height={300}
+                priority
+                className="w-[90px] h-auto object-contain hidden dark:block"
               />
             </div>
             <HeaderActions />

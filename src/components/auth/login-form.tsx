@@ -5,7 +5,6 @@ import { Eye, EyeOff, User, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "@/store/auth/authSlice";
 import { authServices } from "@/services/api/auth.services";
@@ -45,11 +44,6 @@ export default function LoginPage() {
   }, [dispatch, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log(
-      "🔎 ENV NEXT_PUBLIC_API_BASE_URL:",
-      process.env.NEXT_PUBLIC_API_BASE_URL
-    );
-
     e.preventDefault();
     setError("");
     setIsLoading(true);
@@ -69,10 +63,6 @@ export default function LoginPage() {
       if (!datosUsuario || !token) {
         throw new Error("Respuesta inválida del servidor");
       }
-      console.log(
-        "🔎 ENV NEXT_PUBLIC_API_BASE_URL:",
-        process.env.NEXT_PUBLIC_API_BASE_URL
-      );
 
       // Guardar en Redux
       dispatch(

@@ -4,7 +4,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Edit2, Trash2, Paperclip, X } from "lucide-react";
+import { Edit2, Trash2, Paperclip, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -35,6 +35,10 @@ import {
   DrawerDescription,
   DrawerClose,
 } from "@/components/ui/drawer";
+import axios from "axios";
+import { toast } from "sonner";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 interface SubjectRowProps {
   id: string;
@@ -42,6 +46,8 @@ interface SubjectRowProps {
   dueDate: string;
   status: "entregado" | "en-proceso" | "terminado";
   document?: string;
+  idAsesoramiento?: number;
+  subidoPor?: string;
   onEdit?: (newTitle: string, updatedFiles?: string[]) => void;
   onDelete?: () => void;
   showActions?: boolean;
@@ -54,16 +60,23 @@ export function SubjectRow({
   dueDate,
   status,
   document,
+  idAsesoramiento,
+  subidoPor,
   onEdit,
   onDelete,
   showActions,
-  expandedContent,
 }: SubjectRowProps) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [editTitle, setEditTitle] = useState(title);
   const [archivos, setArchivos] = useState<FileList | null>(null);
+  const [idsEliminar, setIdsEliminar] = useState<number[]>([]);
+
+  // Archivos existentes: robusto contra "undefined"
   const [existingFiles, setExistingFiles] = useState<string[]>([]);
+  const user = useSelector((state: RootState) => state.auth.user);
+  const userRole = user?.nombre || user?.rol || "estudiante";
+
   useEffect(() => {
     if (openEdit && existingFiles.length === 0 && document) {
       setTimeout(() => {
@@ -71,6 +84,7 @@ export function SubjectRow({
       }, 0);
     }
   }, [openEdit]);
+
   useEffect(() => {
     if (document && !openEdit) {
       setTimeout(() => {
@@ -89,10 +103,46 @@ export function SubjectRow({
     setExistingFiles(updated);
   };
 
-  const handleSaveEdit = () => {
-    if (editTitle.trim()) {
+  const handleSaveEdit = async () => {
+    if (!editTitle.trim()) {
+      toast.error("El título no puede estar vacío");
+      return;
+    }
+    try {
+      const formData = new FormData();
+      formData.append("titulo", editTitle);
+      if (archivos) {
+        Array.from(archivos).forEach((file) => {
+          formData.append("files", file);
+        });
+      }
+      const response = await axios.patch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/asuntos/estudiante/${id}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      toast.success("✅ Asunto actualizado correctamente");
+      console.log("Respuesta del servidor:", response.data);
       onEdit?.(editTitle, existingFiles);
       setOpenEdit(false);
+    } catch (error) {
+      console.error("❌ Error al actualizar el asunto:", error);
+      toast.error("Error al actualizar el asunto");
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/asuntos/${id}`
+      );
+
+      toast.success("Asunto eliminado correctamente");
+      onDelete?.(); // notificar al padre
+      setOpenDelete(false);
+    } catch (error) {
+      console.error("Error eliminando asunto:", error);
+      toast.error("No se pudo eliminar el asunto");
     }
   };
 
@@ -215,7 +265,7 @@ export function SubjectRow({
                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
                     <AlertDialogAction
                       className="bg-destructive text-white hover:bg-destructive/80"
-                      onClick={() => onDelete?.()}
+                      onClick={handleDelete}
                     >
                       Eliminar
                     </AlertDialogAction>

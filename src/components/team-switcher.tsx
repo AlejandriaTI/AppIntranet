@@ -45,12 +45,14 @@ export function TeamSwitcher({
               {/* 🔹 Logo dinámico según modo */}
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-transparent">
                 {/* Modo claro → logo oscuro */}
+
                 <Image
-                  src="/logo/logoOscuro.svg"
+                  src="/logo/LogoOscuro.svg"
                   alt="Logo Alejandría"
                   width={20}
                   height={20}
                   priority
+                  unoptimized
                   className="block dark:hidden"
                 />
 

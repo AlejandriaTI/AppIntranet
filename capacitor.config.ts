@@ -4,13 +4,26 @@ const config: CapacitorConfig = {
   appId: "com.aleja.pe",
   appName: "Portal Alejandria",
   webDir: "out",
+
   server: {
     androidScheme: "http",
+    allowNavigation: ["*"],
     cleartext: true,
+    hostname: "localhost",
   },
+
   android: {
     webContentsDebuggingEnabled: true,
     allowMixedContent: true,
+  },
+
+  plugins: {
+    SplashScreen: {
+      launchShowDuration: 0,
+      autoHide: false,
+      showSpinner: false,
+      splashImmersive: false,
+    },
   },
 };
 
