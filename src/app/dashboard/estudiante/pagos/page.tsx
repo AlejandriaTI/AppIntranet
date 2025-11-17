@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useAsesorias } from "@/hooks/useAsesoria";
-import { CalendarIcon, DollarSignIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 
 interface Pago {
   id: string;

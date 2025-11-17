@@ -15,6 +15,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { Preferences } from "@capacitor/preferences";
 
 interface DeliveryHeaderProps {
   asesoriaId: string | number;
@@ -29,6 +30,7 @@ export function DeliveryHeader({
   const [titulo, setTitulo] = React.useState("");
   const [archivos, setArchivos] = React.useState<FileList | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [esDelegado, setEsDelegado] = React.useState<boolean>(false);
 
   // 🔹 Tipos permitidos
   const tiposPermitidos = [
@@ -50,31 +52,42 @@ export function DeliveryHeader({
   ];
 
   // 🔹 Recuperar token y rol (igual que tu EnvioArchivo original)
-  const getAuthData = () => {
-    let token: string | null = null;
+
+  const getAuthData = async () => {
     let role = "estudiante";
 
-    const rawToken = localStorage.getItem("authToken");
-    if (rawToken) {
-      try {
-        token = rawToken.trim().startsWith("{")
-          ? JSON.parse(rawToken)?.access_token
-          : rawToken;
-      } catch {
-        token = rawToken;
-      }
-    }
+    const tokenRes = await Preferences.get({ key: "authToken" });
+    const userRes = await Preferences.get({ key: "user" });
 
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
+    const token = tokenRes.value || null;
+
+    if (userRes.value) {
       try {
-        const parsed = JSON.parse(storedUser);
+        const parsed = JSON.parse(userRes.value);
         if (parsed?.role) role = parsed.role;
       } catch {}
     }
 
     return { token, role };
   };
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const tokenRes = await Preferences.get({ key: "authToken" });
+      const userRes = await Preferences.get({ key: "user" });
+
+      if (userRes.value) {
+        try {
+          const parsedUser = JSON.parse(userRes.value);
+          setEsDelegado(Boolean(parsedUser.esDelegado));
+        } catch (err) {
+          console.log("Error parsing user", err);
+        }
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // 🔹 Elimina un archivo específico
   const handleRemoveFile = (index: number) => {
@@ -108,7 +121,7 @@ export function DeliveryHeader({
       return;
     }
 
-    const { token, role } = getAuthData();
+    const { token, role } = await getAuthData();
     const formData = new FormData();
     formData.append("titulo", titulo);
     formData.append("subido_por", role);
@@ -153,7 +166,7 @@ export function DeliveryHeader({
     <div className="flex items-center justify-between">
       <h2 className="text-2xl font-bold tracking-tight">Entregas</h2>
 
-      {showNewButton && (
+      {showNewButton && esDelegado && (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button size="sm" className="gap-2">
@@ -203,9 +216,7 @@ export function DeliveryHeader({
                       >
                         <div className="flex items-center gap-2 truncate">
                           <Paperclip className="w-3 h-3 text-gray-500" />
-                          <span className="truncate max-w-60">
-                            {file.name}
-                          </span>
+                          <span className="truncate max-w-60">{file.name}</span>
                         </div>
                         <button
                           type="button"

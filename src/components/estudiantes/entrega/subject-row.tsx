@@ -70,7 +70,6 @@ export function SubjectRow({
   const [openDelete, setOpenDelete] = useState(false);
   const [editTitle, setEditTitle] = useState(title);
   const [archivos, setArchivos] = useState<FileList | null>(null);
-  const [idsEliminar, setIdsEliminar] = useState<number[]>([]);
 
   // Archivos existentes: robusto contra "undefined"
   const [existingFiles, setExistingFiles] = useState<string[]>([]);
