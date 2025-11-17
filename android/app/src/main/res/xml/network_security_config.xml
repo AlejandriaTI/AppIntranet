@@ -6,7 +6,5 @@
     <domain includeSubdomains="true">192.168.1.45:3001</domain>
     <domain includeSubdomains="true">https://b517d7e30d7c.ngrok-free.app</domain>
     <domain includeSubdomains="true">https://api.alejandriaconsultora.com</domain>
-
-
   </domain-config>
 </network-security-config>
