@@ -17,6 +17,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 export function NavMain({
@@ -33,6 +34,12 @@ export function NavMain({
     }[];
   }[];
 }) {
+  const { setOpen, setOpenMobile, isMobile } = useSidebar();
+
+  const closeSidebar = () => {
+    if (isMobile) setOpenMobile(false);
+    else setOpen(false);
+  };
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="text-xs font-semibold uppercase text-gray-700 dark:text-gray-300 tracking-wider mb-2">
@@ -81,6 +88,7 @@ export function NavMain({
                       <SidebarMenuSubItem key={subItem.title}>
                         <SidebarMenuSubButton asChild>
                           <Link
+                            onClick={closeSidebar} // 👈🔥 cierre automático
                             href={subItem.url}
                             className="flex items-center gap-2 text-sm text-black dark:text-gray-300 hover:font-bold hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition rounded-md px-2 py-1"
                           >
@@ -108,7 +116,11 @@ export function NavMain({
                     : "text-black dark:text-gray-300 hover:font-bold hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 hover:before:bg-black dark:hover:before:bg-white"
                 }`}
               >
-                <Link href={item.url} className="flex items-center w-full">
+                <Link
+                  href={item.url}
+                  onClick={closeSidebar}
+                  className="flex items-center w-full"
+                >
                   {item.icon && (
                     <item.icon
                       className={`w-5 h-5 mr-1 transition ${

@@ -41,11 +41,31 @@ export function RecentNews() {
 
   const handleScroll = (direction: "left" | "right") => {
     if (!scrollRef.current) return;
-    const scrollAmount = scrollRef.current.offsetWidth * 0.9; // desplaza casi un ancho visible
-    scrollRef.current.scrollBy({
-      left: direction === "left" ? -scrollAmount : scrollAmount,
-      behavior: "smooth",
-    });
+
+    const container = scrollRef.current;
+    const cardWidth = container.offsetWidth; // 1 card visible
+    const totalWidth = container.scrollWidth;
+    const maxScroll = totalWidth - cardWidth;
+
+    // Scroll actual redondeado
+    const current = Math.round(container.scrollLeft);
+
+    if (direction === "right") {
+      // Si ya está al final → regresa al inicio
+      if (current >= maxScroll - 10) {
+        container.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        container.scrollBy({ left: cardWidth, behavior: "smooth" });
+      }
+    } else {
+      // direction === "left"
+      // Si ya está al inicio → salta al final
+      if (current <= 10) {
+        container.scrollTo({ left: maxScroll, behavior: "smooth" });
+      } else {
+        container.scrollBy({ left: -cardWidth, behavior: "smooth" });
+      }
+    }
   };
 
   if (loading) {
@@ -74,24 +94,24 @@ export function RecentNews() {
       <h2 className="text-2xl font-bold">Noticias Recientes</h2>
 
       {/* Carrusel controlado */}
-      <div className="relative w-full">
+      <div className="relative w-full flex items-center justify-center">
         <div
           ref={scrollRef}
-          className="flex w-full gap-4 overflow-hidden pb-2 scroll-smooth snap-x snap-mandatory"
+          className="flex gap-6 overflow-hidden w-[260px] sm:w-[300px] lg:w-[330px] snap-x snap-mandatory"
         >
           {noticias.map((item) => (
             <Card
               key={item.id}
               onClick={() => setSelectedNoticia(item)}
-              className="shrink-0 snap-start w-[280px] sm:w-[320px] lg:w-[350px] overflow-hidden transition-all duration-300 cursor-pointer hover:shadow-lg hover:scale-[1.02]"
+              className="snap-center shrink-0 w-full cursor-pointer rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-background"
             >
               <img
                 src={item.imagen || "/placeholder.svg"}
                 alt={item.titulo}
-                className="w-full h-40 object-cover"
+                className="w-full h-48 object-cover rounded-t-2xl"
               />
-              <CardContent className="p-4 bg-primary text-primary-foreground">
-                <p className="text-sm font-medium line-clamp-2">
+              <CardContent className="p-4 rounded-b-2xl bg-primary text-primary-foreground">
+                <p className="text-sm font-semibold line-clamp-2">
                   {item.titulo}
                 </p>
                 <span className="text-xs mt-2 opacity-75 hover:opacity-100">
@@ -108,7 +128,7 @@ export function RecentNews() {
             <Button
               variant="outline"
               size="icon"
-              className="absolute left-0 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background rounded-full shadow-sm"
+              className="absolute left-3 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background rounded-full shadow-sm"
               onClick={() => handleScroll("left")}
             >
               <ChevronLeft className="h-4 w-4" />
@@ -117,7 +137,7 @@ export function RecentNews() {
             <Button
               variant="outline"
               size="icon"
-              className="absolute right-0 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background rounded-full shadow-sm"
+              className="absolute right-3 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background rounded-full shadow-sm"
               onClick={() => handleScroll("right")}
             >
               <ChevronRight className="h-4 w-4" />

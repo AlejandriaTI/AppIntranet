@@ -17,6 +17,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Browser } from "@capacitor/browser";
 
 interface Tutorial {
   id: string;
@@ -55,6 +56,8 @@ export default function RecursosEstudiante() {
   const [guiaIndex, setGuiaIndex] = useState(0);
   const [herramientaIndex, setHerramientaIndex] = useState(0);
 
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -83,17 +86,52 @@ export default function RecursosEstudiante() {
     fetchData();
   }, []);
 
+  // 🔹 Detectar si es móvil (sin romper SSR)
+  useEffect(() => {
+    const updateIsMobile = () => {
+      if (typeof window !== "undefined") {
+        setIsMobile(window.innerWidth < 768);
+      }
+    };
+    updateIsMobile();
+    window.addEventListener("resize", updateIsMobile);
+    return () => window.removeEventListener("resize", updateIsMobile);
+  }, []);
+
+  const buildFileUrl = (url: string) => {
+    return url || "";
+  };
+
   const getYouTubeId = (url: string) => {
     const regExp =
       /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
     return match && match[2].length === 11 ? match[2] : null;
   };
-
+  const openPdf = async (url: string) => {
+    await Browser.open({
+      url,
+      windowName: "_system",
+    });
+  };
+  // 🔹 Descarga amigable para web + móvil (Capacitor)
   const downloadPdf = (url: string, title: string) => {
+    if (!url) return;
+
+    // Heurística simple para móvil
+    const isMobileUA =
+      typeof navigator !== "undefined" &&
+      /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (isMobileUA) {
+      // En WebView suele ir mejor abrir en navegador
+      window.open(url, "_blank");
+      return;
+    }
+
     const link = document.createElement("a");
     link.href = url;
-    link.download = title || "documento.pdf";
+    link.download = title || "documento";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -174,19 +212,22 @@ export default function RecursosEstudiante() {
 
         {/* PDF Modal */}
         <Dialog open={showPdfModal} onOpenChange={setShowPdfModal}>
-          <DialogContent className="max-w-4xl h-[80vh]">
-            <DialogHeader>
-              <DialogTitle>Documento PDF</DialogTitle>
+          <DialogContent className="max-w-4xl h-[80vh] flex flex-col">
+            <DialogHeader className="shrink-0">
+              <DialogTitle>Documento</DialogTitle>
             </DialogHeader>
-            {currentPdf && (
-              <iframe
-                src={currentPdf}
-                width="100%"
-                height="100%"
-                title="PDF Viewer"
-                className="border rounded"
-              />
-            )}
+
+            <div className="flex-1 relative">
+              {currentPdf && (
+                <iframe
+                  src={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(
+                    currentPdf
+                  )}`}
+                  className="absolute inset-0 w-full h-[calc(100%-0px)] border rounded"
+                  title="PDF Viewer"
+                />
+              )}
+            </div>
           </DialogContent>
         </Dialog>
 
@@ -194,7 +235,6 @@ export default function RecursosEstudiante() {
         <section className="space-y-4">
           <h2 className="text-2xl font-bold">Tutoriales</h2>
           <div className="flex items-center gap-4">
-            {/* Flecha izquierda */}
             <Button
               variant="outline"
               size="icon"
@@ -204,12 +244,10 @@ export default function RecursosEstudiante() {
               <ChevronLeft className="h-4 w-4" />
             </Button>
 
-            {/* Contenedor adaptable */}
             <div className="flex-1">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Mostrar solo 1 tutorial en móvil */}
-                {window.innerWidth < 768
-                  ? [visibleTutorials[tutorialIndex]].map(
+                {isMobile
+                  ? [visibleTutorials[0]].map(
                       (tutorial) =>
                         tutorial && (
                           <Card
@@ -283,7 +321,6 @@ export default function RecursosEstudiante() {
               </div>
             </div>
 
-            {/* Flecha derecha */}
             <Button
               variant="outline"
               size="icon"
@@ -299,7 +336,6 @@ export default function RecursosEstudiante() {
         <section className="space-y-4">
           <h2 className="text-2xl font-bold">Guías</h2>
           <div className="flex items-center gap-4">
-            {/* Botón izquierda */}
             <Button
               variant="outline"
               size="icon"
@@ -309,12 +345,10 @@ export default function RecursosEstudiante() {
               <ChevronLeft className="h-4 w-4" />
             </Button>
 
-            {/* Contenedor adaptable */}
             <div className="flex-1">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Mostrar solo 1 guía en móvil */}
-                {window.innerWidth < 768
-                  ? [visibleGuias[guiaIndex]].map(
+                {isMobile
+                  ? [visibleGuias[0]].map(
                       (guia) =>
                         guia && (
                           <Card
@@ -344,7 +378,7 @@ export default function RecursosEstudiante() {
                                   size="sm"
                                   className="w-full sm:flex-1 bg-transparent text-xs sm:text-sm justify-center gap-1 sm:gap-2 px-2 sm:px-4"
                                   onClick={() => {
-                                    setCurrentPdf(guia.documento);
+                                    setCurrentPdf(buildFileUrl(guia.documento));
                                     setShowPdfModal(true);
                                   }}
                                 >
@@ -356,9 +390,7 @@ export default function RecursosEstudiante() {
                                   variant="outline"
                                   size="sm"
                                   className="w-full sm:flex-1 bg-transparent text-xs sm:text-sm justify-center gap-1 sm:gap-2 px-2 sm:px-4"
-                                  onClick={() =>
-                                    downloadPdf(guia.documento, guia.titulo)
-                                  }
+                                  onClick={() => openPdf(guia.documento)}
                                 >
                                   <Download className="h-4 w-4" />
                                   <span>Descargar</span>
@@ -394,7 +426,7 @@ export default function RecursosEstudiante() {
                               size="sm"
                               className="flex-1 bg-transparent"
                               onClick={() => {
-                                setCurrentPdf(guia.documento);
+                                setCurrentPdf(buildFileUrl(guia.documento));
                                 setShowPdfModal(true);
                               }}
                             >
@@ -406,7 +438,10 @@ export default function RecursosEstudiante() {
                               size="sm"
                               className="flex-1 bg-transparent "
                               onClick={() =>
-                                downloadPdf(guia.documento, guia.titulo)
+                                downloadPdf(
+                                  buildFileUrl(guia.documento),
+                                  guia.titulo
+                                )
                               }
                             >
                               <Download className="h-4 w-4 mr-1" />
@@ -419,7 +454,6 @@ export default function RecursosEstudiante() {
               </div>
             </div>
 
-            {/* Botón derecha */}
             <Button
               variant="outline"
               size="icon"
@@ -435,7 +469,6 @@ export default function RecursosEstudiante() {
         <section className="space-y-4">
           <h2 className="text-2xl font-bold">Herramientas</h2>
           <div className="flex items-center gap-4">
-            {/* Flecha izquierda */}
             <Button
               variant="outline"
               size="icon"
@@ -445,12 +478,10 @@ export default function RecursosEstudiante() {
               <ChevronLeft className="h-4 w-4" />
             </Button>
 
-            {/* Contenedor adaptable */}
             <div className="flex-1">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Mostrar solo 1 herramienta en móvil */}
-                {window.innerWidth < 768
-                  ? [visibleHerramientas[herramientaIndex]].map(
+                {isMobile
+                  ? [visibleHerramientas[0]].map(
                       (herramienta) =>
                         herramienta && (
                           <Card
@@ -540,7 +571,6 @@ export default function RecursosEstudiante() {
               </div>
             </div>
 
-            {/* Flecha derecha */}
             <Button
               variant="outline"
               size="icon"

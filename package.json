@@ -13,6 +13,7 @@
   "dependencies": {
     "@capacitor/android": "^7.4.4",
     "@capacitor/app": "^7.1.0",
+    "@capacitor/browser": "^7.0.2",
     "@capacitor/core": "^7.4.4",
     "@capacitor/dialog": "^7.0.2",
     "@capacitor/ios": "^7.4.4",
@@ -32,6 +33,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@reduxjs/toolkit": "^2.9.2",
     "axios": "^1.12.2",
+    "capacitor-blob-writer": "^1.1.19",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.24",
