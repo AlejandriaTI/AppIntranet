@@ -289,7 +289,7 @@ export function SubjectRow({
               </button>
             </DrawerTrigger>
 
-            <DrawerContent className="p-6 rounded-t-2xl">
+            <DrawerContent className="p-6 rounded-t-2xl h-[70vh]">
               <DrawerHeader>
                 <DrawerTitle className="text-lg font-semibold">
                   {title}

@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
   Select,
@@ -10,10 +15,16 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { FileText } from "lucide-react";
+import { ArrowDownToLine, FileText, X } from "lucide-react";
 import { useAsesorias } from "@/hooks/useAsesoria";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface Contrato {
   servicio?: string;
@@ -155,6 +166,16 @@ function Field({ label, value }: { label: string; value?: string }) {
 }
 
 function DocumentoField({ url }: { url?: string }) {
+  const [open, setOpen] = useState(false);
+
+  const isPdf = url?.toLowerCase().endsWith(".pdf");
+  const isImage =
+    url &&
+    (url.toLowerCase().endsWith(".jpg") ||
+      url.toLowerCase().endsWith(".jpeg") ||
+      url.toLowerCase().endsWith(".png") ||
+      url.toLowerCase().endsWith(".webp"));
+
   return (
     <div className="flex flex-col gap-1">
       <p className="text-sm font-medium">Documento</p>
@@ -163,20 +184,54 @@ function DocumentoField({ url }: { url?: string }) {
         {url ? (
           <>
             <span>Archivo disponible</span>
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-cyan-700 hover:text-cyan-900 flex items-center gap-1 font-medium"
-            >
-              <FileText className="w-4 h-4" />
-              Ver / Descargar
-            </a>
+
+            <div className="flex items-center gap-3">
+              {/* ABRIR MODAL */}
+              <button
+                onClick={() => setOpen(true)}
+                className="text-cyan-700 hover:text-cyan-900 flex items-center gap-1 font-medium"
+              >
+                <FileText className="w-4 h-4" />
+                Ver
+              </button>
+            </div>
           </>
         ) : (
           <span>No asignado</span>
         )}
       </div>
+
+      {/* MODAL */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-4xl h-[85vh] flex flex-col">
+          <DialogHeader className="shrink-0 flex flex-row justify-between items-center">
+            <DialogTitle>Documento</DialogTitle>
+          </DialogHeader>
+
+          <div className="flex-1 relative mt-2">
+            {isPdf ? (
+              <iframe
+                src={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(
+                  url || ""
+                )}`}
+                className="absolute inset-0 w-full h-full border rounded"
+              />
+            ) : isImage ? (
+              <img
+                src={url}
+                className="absolute inset-0 w-full h-full object-contain rounded border"
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full text-center p-6">
+                <p className="text-sm text-gray-600">
+                  No se puede previsualizar este tipo de archivo. Puedes
+                  descargarlo para abrirlo localmente.
+                </p>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

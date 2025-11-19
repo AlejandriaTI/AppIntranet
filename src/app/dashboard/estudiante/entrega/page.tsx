@@ -120,9 +120,10 @@ export default function DeliveriesPage() {
             label: "Asuntos",
             content: (
               <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  Buscar asunto
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                  Avances en curso
                 </h3>
+
                 {/* 🔍 Buscador + Filtro */}
                 <div className="flex items-center gap-3 w-full">
                   <Input
@@ -153,7 +154,13 @@ export default function DeliveriesPage() {
                 {/* 🟡 Pendientes */}
                 {(filterStatus === "all" || filterStatus === "pendientes") && (
                   <div className="space-y-2">
-                    <h3 className="font-semibold">Pendientes</h3>
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-semibold">Tus Avances</h3>
+                      <button className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline">
+                        Ver más
+                      </button>
+                    </div>
+
                     <SubjectsList
                       subjects={filteredSubjects.filter((s) =>
                         ["entregado", "en-proceso"].includes(s.status)
@@ -162,19 +169,6 @@ export default function DeliveriesPage() {
                       onEdit={handleEditSubject}
                       onDelete={handleDeleteSubject}
                       showActions={true}
-                    />
-                  </div>
-                )}
-
-                {/* 🟢 Terminados */}
-                {(filterStatus === "all" || filterStatus === "terminados") && (
-                  <div className="space-y-2 mt-6">
-                    <h3 className="font-semibold">Terminados</h3>
-                    <SubjectsList
-                      subjects={filteredSubjects.filter(
-                        (s) => s.status === "terminado"
-                      )}
-                      loading={loading}
                     />
                   </div>
                 )}
