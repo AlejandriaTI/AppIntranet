@@ -281,7 +281,6 @@ export default function PagosEstudiante() {
                             </div>
                           </>
                         ) : (
-                          /* ------------- DISEÑO NORMAL QUE YA TENÍAS ------------- */
                           <>
                             <div className="flex items-start justify-between mb-4">
                               <div className="flex-1">
