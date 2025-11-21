@@ -8,7 +8,6 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerDescription,
-  DrawerClose,
 } from "@/components/ui/drawer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -147,7 +146,7 @@ export function DeliveryDetailDrawer({
             </h3>
             {titulo_asesor && (
               <div className="flex items-start gap-3 mb-3 pb-3 border-b border-border/50">
-                <User className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                <User className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
                 <div className="min-w-0">
                   <p className="text-xs text-muted-foreground font-medium">
                     Asesor
@@ -159,7 +158,7 @@ export function DeliveryDetailDrawer({
               </div>
             )}
             <div className="flex items-start gap-3">
-              <Calendar className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+              <Calendar className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
               <div className="min-w-0">
                 <p className="text-xs text-muted-foreground font-medium">
                   Fecha Entrega
@@ -277,7 +276,7 @@ export function DeliveryDetailDrawer({
                         className="flex items-center justify-between gap-3 p-3 rounded-lg bg-white dark:bg-slate-800 border border-border/50 hover:bg-accent/50 transition-colors group"
                       >
                         <div className="flex items-center gap-2 min-w-0">
-                          <div className="text-blue-600 dark:text-blue-400 flex-shrink-0">
+                          <div className="text-blue-600 dark:text-blue-400 shrink-0">
                             {getFileIcon(doc.nombre)}
                           </div>
                           <div className="min-w-0">
@@ -289,7 +288,7 @@ export function DeliveryDetailDrawer({
                             </p>
                           </div>
                         </div>
-                        <Download className="w-4 h-4 text-muted-foreground group-hover:text-foreground flex-shrink-0" />
+                        <Download className="w-4 h-4 text-muted-foreground group-hover:text-foreground shrink-0" />
                       </a>
                     ))}
                   </div>
@@ -323,7 +322,7 @@ export function DeliveryDetailDrawer({
                         className="flex items-center justify-between gap-3 p-3 rounded-lg bg-white dark:bg-slate-800 border border-border/50 hover:bg-accent/50 transition-colors group"
                       >
                         <div className="flex items-center gap-2 min-w-0">
-                          <div className="text-green-600 dark:text-green-400 flex-shrink-0">
+                          <div className="text-green-600 dark:text-green-400 shrink-0">
                             {getFileIcon(doc.nombre)}
                           </div>
                           <div className="min-w-0">
@@ -335,7 +334,7 @@ export function DeliveryDetailDrawer({
                             </p>
                           </div>
                         </div>
-                        <Download className="w-4 h-4 text-muted-foreground group-hover:text-foreground flex-shrink-0" />
+                        <Download className="w-4 h-4 text-muted-foreground group-hover:text-foreground shrink-0" />
                       </a>
                     ))}
                   </div>

@@ -19,8 +19,7 @@ import {
 } from "@/components/ui/sheet";
 
 import { notificationServices } from "@/services/api/notification.services";
-import type { Notification, User } from "@/services/interface/notification";
-import { loadAuthData } from "@/services/storage/authStorage";
+import type { Notification } from "@/services/interface/notification";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
@@ -154,7 +153,7 @@ export const NotificationSheet: React.FC = () => {
                         >
                           {/* Ícono principal */}
                           <div
-                            className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
+                            className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
                               n.leida
                                 ? "bg-gray-100 text-gray-500"
                                 : "bg-blue-100 text-blue-600"
