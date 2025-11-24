@@ -5,10 +5,7 @@ import {
   AsuntoTerminadoAPI,
   SubjectItem,
 } from "@/services/interface/asuntos";
-/**
- * Transforma los documentos del backend (DocumentoAPI)
- * al formato que usa la UI (DocumentItem)
- */
+
 export function mapToDocumentItems(
   data: DocumentoAPI[] | unknown,
   tipo: "usuario" | "asesor"
@@ -70,17 +67,12 @@ export function mapToSubjectItems(data: AsuntoAPI[] | unknown): SubjectItem[] {
         item.estado === "proceso"
           ? "en-proceso"
           : (item.estado as "entregado" | "terminado"),
-      // 🧩 Unir todos los documentos en una sola línea (visible en la UI)
       document:
         documentos.length > 0 ? documentos.join(", ") : "Sin archivos adjuntos",
     };
   });
 }
 
-/**
- * Transforma los asuntos terminados del asesor (asuntos/terminados/:idAsesoria)
- * al formato usado por la UI (SubjectItem)
- */
 export function mapToFinishedSubjectItems(
   data: AsuntoTerminadoAPI[] | unknown
 ): SubjectItem[] {
