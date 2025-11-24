@@ -33,7 +33,6 @@ export async function downloadFile(
           throw new Error(`Error al descargar: ${response.status}`);
         }
 
-        // CapacitorHttp returns base64 string for 'blob' responseType on native
         const base64Data = response.data;
 
         const result = await Filesystem.writeFile({
