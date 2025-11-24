@@ -1,3 +1,47 @@
+// 📁 Documento base (del backend)
+export interface Documento {
+  nombre: string;
+  ruta: string;
+  subido_por: "asesor" | "estudiante";
+  fecha: string; // ISO date
+}
+
+export interface EntregaDetalleItem {
+  id: string;
+  titulo: string;
+  titulo_asesor?: string;
+  profesion_asesoria: string;
+  estado: "entregado" | "en-proceso" | "terminado";
+  fecha_entrega: string;
+  fecha_revision?: string;
+  fecha_estimada?: string;
+  fecha_terminado?: string;
+  documentos: Documento[];
+}
+
+// 📁 Asunto completo (con documentos)
+export interface Asunto {
+  id_asunto: string;
+  titulo: string;
+  titulo_asesor: string | null;
+  profesion_asesoria: string;
+  estado: "terminado" | "entregado" | string;
+  fecha_principal: string;
+  fecha_entrega: string;
+  fecha_revision: string | null;
+  fecha_estimada: string | null;
+  fecha_terminado: string | null;
+  documentos: Documento[];
+}
+
+// 📁 Respuesta del backend con todos los asuntos
+export interface ListadoGlobalizadoResponse {
+  mensaje: string;
+  total_asuntos: number;
+  data: Asunto[];
+}
+
+// 📁 Vista simplificada para tabla/listado general
 export interface AsuntoAPI {
   id_asunto: string;
   titulo: string;
@@ -7,9 +51,10 @@ export interface AsuntoAPI {
   fecha_revision: string | null;
   fecha_estimada: string | null;
   fecha_terminado: string | null;
-  documento_0?: string;
+  documento_0?: string; // solo el primero si se requiere en tabla
 }
 
+// 📁 Vista específica para asuntos terminados
 export interface AsuntoTerminadoAPI {
   id: string;
   titulo_asesor: string;
@@ -19,6 +64,7 @@ export interface AsuntoTerminadoAPI {
   estado: string;
 }
 
+// 📁 Adaptación para UI de tarjetas o listas
 export interface SubjectItem {
   id: string;
   title: string;
@@ -27,11 +73,20 @@ export interface SubjectItem {
   document?: string;
 }
 
-export interface Documento {
-  name: string;
-  url: string;
+// 📁 Adaptación para vista de documentos por asunto
+export interface DocumentItem {
+  id: string;
+  tipo: "usuario" | "asesor";
+  title: string;
+  date: string;
+  status: string;
+  documents: {
+    name: string;
+    url: string;
+  }[];
 }
 
+// 📁 DocumentoAPI para consumo si se quiere "aplanar"
 export interface DocumentoAPI {
   id_asunto: string;
   estado: string;
@@ -46,13 +101,4 @@ export interface DocumentoAPI {
   ruta2?: string;
   nombreDoc3?: string;
   ruta3?: string;
-}
-
-export interface DocumentItem {
-  id: string;
-  tipo: "usuario" | "asesor";
-  title: string;
-  date: string;
-  status: string;
-  documents: Documento[];
 }

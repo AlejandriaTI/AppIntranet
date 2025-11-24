@@ -18,10 +18,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useAsesorias } from "@/hooks/useAsesoria";
 import { asuntosServices } from "@/services/api/asuntos.services";
-import { DocumentItem, SubjectItem } from "@/services/interface/asuntos";
+import { DocumentItem, Asunto } from "@/services/interface/asuntos";
 
 export default function DeliveriesPage() {
-  const [subjects, setSubjects] = useState<SubjectItem[]>([]);
+  const [asuntos, setAsuntos] = useState<Asunto[]>([]);
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<
@@ -38,8 +38,8 @@ export default function DeliveriesPage() {
 
     const fetchAsuntos = async () => {
       try {
-        const asuntos = await asuntosServices.getAllAsuntos(selectedAsesoriaId);
-        setSubjects(asuntos);
+        const data = await asuntosServices.getAsuntosGlobal(selectedAsesoriaId);
+        setAsuntos(data);
       } catch (err) {
         console.error("❌ Error al cargar asuntos:", err);
       }
@@ -70,14 +70,14 @@ export default function DeliveriesPage() {
   const handleDownload = (url: string) => window.open(url, "_blank");
 
   // 🔎 Filtro dinámico por texto + estado
-  const filteredSubjects = subjects.filter((s) => {
-    const matchesText = s.title
+  const filteredAsuntos = asuntos.filter((asunto) => {
+    const matchesText = asunto.titulo
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
     if (filterStatus === "pendientes")
-      return matchesText && ["entregado", "en-proceso"].includes(s.status);
+      return matchesText && ["entregado", "en-proceso"].includes(asunto.estado);
     if (filterStatus === "terminados")
-      return matchesText && s.status === "terminado";
+      return matchesText && asunto.estado === "terminado";
     return matchesText;
   });
 
@@ -159,8 +159,10 @@ export default function DeliveriesPage() {
                     </div>
 
                     <SubjectsList
-                      subjects={filteredSubjects.filter((s) =>
-                        ["entregado", "en-proceso"].includes(s.status)
+                      asuntos={filteredAsuntos.filter((a) =>
+                        ["entregado", "en-proceso", "terminado"].includes(
+                          a.estado
+                        )
                       )}
                       loading={loading}
                       onEdit={handleEditSubject}

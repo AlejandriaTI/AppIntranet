@@ -1,17 +1,10 @@
 import { SubjectRow } from "./subject-row";
 import { EmptyState } from "./empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
-
-interface Subject {
-  id: string;
-  title: string;
-  dueDate: string;
-  status: "entregado" | "en-proceso" | "terminado";
-  document?: string;
-}
+import type { Asunto } from "@/services/interface/asuntos";
 
 interface SubjectsListProps {
-  subjects: Subject[];
+  asuntos: Asunto[];
   loading?: boolean;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
@@ -19,7 +12,7 @@ interface SubjectsListProps {
 }
 
 export function SubjectsList({
-  subjects,
+  asuntos,
   loading,
   onEdit,
   onDelete,
@@ -35,19 +28,28 @@ export function SubjectsList({
     );
   }
 
-  if (subjects.length === 0) {
+  if (asuntos.length === 0) {
     return <EmptyState message="No hay entregas realizadas" />;
   }
 
   return (
     <div className="space-y-3 max-h-80 overflow-y-auto">
-      {subjects.map((subject) => (
+      {asuntos.map((asunto) => (
         <SubjectRow
-          key={subject.id}
-          {...subject}
-          onEdit={() => onEdit?.(subject.id)}
-          onDelete={() => onDelete?.(subject.id)}
-          showActions={showActions} // ← OBLIGATORIO si quieres ver botones
+          key={asunto.id_asunto}
+          id={asunto.id_asunto}
+          title={asunto.titulo}
+          dueDate={asunto.fecha_entrega}
+          status={asunto.estado as "entregado" | "en-proceso" | "terminado"}
+          titulo_asesor={asunto.titulo_asesor}
+          profesion_asesoria={asunto.profesion_asesoria}
+          fecha_revision={asunto.fecha_revision}
+          fecha_estimada={asunto.fecha_estimada}
+          fecha_terminado={asunto.fecha_terminado}
+          documentos={asunto.documentos}
+          onEdit={() => onEdit?.(asunto.id_asunto)}
+          onDelete={() => onDelete?.(asunto.id_asunto)}
+          showActions={showActions}
         />
       ))}
     </div>

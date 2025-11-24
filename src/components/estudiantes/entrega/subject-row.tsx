@@ -25,9 +25,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
 import { toast } from "sonner";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
+
 import { DeliveryDetailDrawer } from "./delivery-detail-drawer";
+import type { Documento } from "@/services/interface/asuntos";
 
 interface SubjectRowProps {
   id: string;
@@ -41,6 +41,13 @@ interface SubjectRowProps {
   onDelete?: () => void;
   showActions?: boolean;
   expandedContent?: React.ReactNode;
+  // Optional fields from Asunto API for DeliveryDetailDrawer
+  titulo_asesor?: string | null;
+  profesion_asesoria?: string;
+  fecha_revision?: string | null;
+  fecha_estimada?: string | null;
+  fecha_terminado?: string | null;
+  documentos?: Documento[];
 }
 
 export function SubjectRow({
@@ -51,6 +58,12 @@ export function SubjectRow({
   document,
   onEdit,
   onDelete,
+  titulo_asesor,
+  profesion_asesoria,
+  fecha_revision,
+  fecha_estimada,
+  fecha_terminado,
+  documentos,
 }: SubjectRowProps) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -59,8 +72,6 @@ export function SubjectRow({
 
   // Archivos existentes: robusto contra "undefined"
   const [existingFiles, setExistingFiles] = useState<string[]>([]);
-  const user = useSelector((state: RootState) => state.auth.user);
-  const userRole = user?.nombre || user?.rol || "estudiante";
 
   useEffect(() => {
     if (openEdit && existingFiles.length === 0 && document) {
@@ -68,7 +79,7 @@ export function SubjectRow({
         setExistingFiles(document.split(",").map((d) => d.trim()));
       }, 0);
     }
-  }, [openEdit]);
+  }, [openEdit, document, existingFiles.length]);
 
   useEffect(() => {
     if (document && !openEdit) {
@@ -76,7 +87,7 @@ export function SubjectRow({
         setExistingFiles(document.split(",").map((d) => d.trim()));
       }, 0);
     }
-  }, [document]);
+  }, [document, openEdit]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setArchivos(e.target.files);
@@ -131,23 +142,35 @@ export function SubjectRow({
     }
   };
 
-  const documents = document
-    ? document.split(",").map((d) => ({
-        nombre: d.trim(),
-        ruta: d.trim(),
-        subido_por: "estudiante" as const,
-        fecha: new Date().toISOString(),
-      }))
-    : [];
+  // Use documentos from API if available, otherwise parse from document string
+  const documents: Documento[] =
+    documentos ||
+    (document
+      ? document.split(",").map((d) => ({
+          nombre: d.trim(),
+          ruta: d.trim(),
+          subido_por: "estudiante",
+          fecha: new Date().toISOString(),
+        }))
+      : []);
+
+  // Helper function to map SubjectRow props to DeliveryDetailDrawer props
+  const mapAsuntoToDrawerProps = () => ({
+    titulo: title,
+    titulo_asesor: titulo_asesor || undefined,
+    profesion_asesoria: profesion_asesoria || "Asesoría General",
+    estado: status,
+    fecha_entrega: dueDate,
+    fecha_revision: fecha_revision || undefined,
+    fecha_estimada: fecha_estimada || undefined,
+    fecha_terminado: fecha_terminado || undefined,
+    documentos: documents,
+  });
 
   return (
     <>
       <DeliveryDetailDrawer
-        titulo={title}
-        profesion_asesoria="Asesoría"
-        estado={status}
-        fecha_entrega={dueDate}
-        documentos={documents}
+        {...mapAsuntoToDrawerProps()}
         onEdit={() => setOpenEdit(true)}
         onDelete={() => setOpenDelete(true)}
       />

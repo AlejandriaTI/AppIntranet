@@ -5,6 +5,7 @@ import {
   SubjectItem,
   AsuntoAPI,
   AsuntoTerminadoAPI,
+  Asunto,
 } from "@/services/interface/asuntos";
 import {
   mapToDocumentItems,
@@ -52,9 +53,15 @@ async function getAsuntosTerminados(
   return mapToFinishedSubjectItems(data as AsuntoTerminadoResponse);
 }
 
+export async function getAsuntosGlobal(idAsesoria: number): Promise<Asunto[]> {
+  const response = await api.get(`asuntos/global/${idAsesoria}`);
+  return response.data?.data ?? [];
+}
+
 export const asuntosServices = {
   getDocumentsClient,
   getDocumentsAsesor,
   getAllAsuntos,
   getAsuntosTerminados,
+  getAsuntosGlobal,
 };
