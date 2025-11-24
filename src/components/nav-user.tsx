@@ -40,7 +40,7 @@ export function NavUser({
     rol?: string; // <-- AÑADIR
   };
 }) {
-  const { isMobile } = useSidebar();
+  const { setOpen, setOpenMobile, isMobile } = useSidebar();
   const initials = getInitials(user.name);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -48,6 +48,11 @@ export function NavUser({
   const handleLogout = () => {
     dispatch(logout()); // ✅ Limpia Redux + Preferences
     router.push("/"); // ✅ Redirige
+  };
+
+  const closeSidebar = () => {
+    if (isMobile) setOpenMobile(false);
+    else setOpen(false);
   };
 
   return (
@@ -111,7 +116,7 @@ export function NavUser({
                 user?.rol ?? ""
               ) && (
                 <>
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild onSelect={closeSidebar}>
                     <Link
                       href="/dashboard/estudiante/perfil"
                       className="flex items-center gap-2"
@@ -121,7 +126,7 @@ export function NavUser({
                     </Link>
                   </DropdownMenuItem>
 
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild onSelect={closeSidebar}>
                     <Link
                       href="/dashboard/estudiante/asesor"
                       className="flex items-center gap-2"
@@ -131,7 +136,7 @@ export function NavUser({
                     </Link>
                   </DropdownMenuItem>
 
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild onSelect={closeSidebar}>
                     <Link
                       href="/dashboard/estudiante/contrato"
                       className="flex items-center gap-2"
@@ -141,7 +146,7 @@ export function NavUser({
                     </Link>
                   </DropdownMenuItem>
 
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild onSelect={closeSidebar}>
                     <Link
                       href="/dashboard/estudiante/contrasena"
                       className="flex items-center gap-2"
