@@ -7,8 +7,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Download } from "lucide-react";
 
-import { Capacitor } from "@capacitor/core";
-import { Browser } from "@capacitor/browser";
+import { downloadFile } from "@/utils/downloadFile";
+
 interface EnvioBack {
   id_asunto: string;
   estado: "terminado" | "pendiente" | "en-revision";
@@ -114,29 +114,6 @@ export function AdvisorSubmissions({
     });
   };
 
-  const handleDownloadFile = async (url: string) => {
-    if (!url) return;
-
-    const isApp = Capacitor.getPlatform() !== "web";
-
-    if (isApp) {
-      try {
-        await Browser.open({ url });
-        console.log("🌐 Archivo abierto en navegador para descarga");
-        return;
-      } catch (e) {
-        console.error("❌ Error abriendo navegador:", e);
-        alert("No se pudo abrir el archivo.");
-      }
-    }
-
-    // 🖥️ WEB
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = url.split("/").pop() || "archivo";
-    a.click();
-  };
-
   // 🧱 Skeleton de carga
   if (isLoading || loading) {
     return (
@@ -204,7 +181,7 @@ export function AdvisorSubmissions({
                 envioReciente.archivos.map((archivo, index) => (
                   <button
                     key={index}
-                    onClick={() => handleDownloadFile(archivo.ruta)}
+                    onClick={() => downloadFile(archivo.ruta)}
                     className="inline-flex items-center gap-2 bg-primary/10 hover:bg-primary/20 px-4 py-2 rounded-lg transition-colors w-full justify-center"
                   >
                     <Download className="h-4 w-4" />

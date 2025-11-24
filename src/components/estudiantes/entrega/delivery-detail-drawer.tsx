@@ -28,6 +28,7 @@ import {
   Trash2,
   Edit2,
 } from "lucide-react";
+import { downloadFile } from "@/utils/downloadFile";
 
 interface Document {
   nombre: string;
@@ -133,7 +134,8 @@ export function DeliveryDetailDrawer({
                 className="flex gap-2 mt-3 pt-3 border-t"
                 onClick={(e) => e.stopPropagation()}
               >
-                {onEdit && (
+                {/* Solo mostrar botón de editar si el estado es "entregado" */}
+                {onEdit && estado === "entregado" && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -144,7 +146,7 @@ export function DeliveryDetailDrawer({
                     <Edit2 className="w-4 h-4" />
                   </button>
                 )}
-                {onDelete && (
+                {onDelete && estado === "entregado" && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -311,18 +313,16 @@ export function DeliveryDetailDrawer({
                 <AccordionContent className="pb-3 pt-2">
                   <div className="space-y-2">
                     {estudianteDocumentos.map((doc, idx) => (
-                      <a
+                      <button
                         key={idx}
-                        href={doc.ruta}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-between gap-3 p-3 rounded-lg bg-white dark:bg-slate-800 border border-border/50 hover:bg-accent/50 transition-colors group"
+                        onClick={() => downloadFile(doc.ruta, doc.nombre)}
+                        className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-white dark:bg-slate-800 border border-border/50 hover:bg-accent/50 transition-colors group"
                       >
                         <div className="flex items-center gap-2 min-w-0">
                           <div className="text-blue-600 dark:text-blue-400 shrink-0">
                             {getFileIcon(doc.nombre)}
                           </div>
-                          <div className="min-w-0">
+                          <div className="min-w-0 text-left">
                             <p className="text-sm font-medium text-foreground truncate group-hover:underline">
                               {doc.nombre}
                             </p>
@@ -332,7 +332,7 @@ export function DeliveryDetailDrawer({
                           </div>
                         </div>
                         <Download className="w-4 h-4 text-muted-foreground group-hover:text-foreground shrink-0" />
-                      </a>
+                      </button>
                     ))}
                   </div>
                 </AccordionContent>
@@ -357,18 +357,16 @@ export function DeliveryDetailDrawer({
                 <AccordionContent className="pb-3 pt-2">
                   <div className="space-y-2">
                     {asesorDocumentos.map((doc, idx) => (
-                      <a
+                      <button
                         key={idx}
-                        href={doc.ruta}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-between gap-3 p-3 rounded-lg bg-white dark:bg-slate-800 border border-border/50 hover:bg-accent/50 transition-colors group"
+                        onClick={() => downloadFile(doc.ruta, doc.nombre)}
+                        className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-white dark:bg-slate-800 border border-border/50 hover:bg-accent/50 transition-colors group"
                       >
                         <div className="flex items-center gap-2 min-w-0">
                           <div className="text-green-600 dark:text-green-400 shrink-0">
                             {getFileIcon(doc.nombre)}
                           </div>
-                          <div className="min-w-0">
+                          <div className="min-w-0 text-left">
                             <p className="text-sm font-medium text-foreground truncate group-hover:underline">
                               {doc.nombre}
                             </p>
@@ -378,7 +376,7 @@ export function DeliveryDetailDrawer({
                           </div>
                         </div>
                         <Download className="w-4 h-4 text-muted-foreground group-hover:text-foreground shrink-0" />
-                      </a>
+                      </button>
                     ))}
                   </div>
                 </AccordionContent>

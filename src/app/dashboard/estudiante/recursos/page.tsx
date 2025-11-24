@@ -17,7 +17,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Browser } from "@capacitor/browser";
+import { downloadFile } from "@/utils/downloadFile";
 
 interface Tutorial {
   id: string;
@@ -107,34 +107,6 @@ export default function RecursosEstudiante() {
       /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
     return match && match[2].length === 11 ? match[2] : null;
-  };
-  const openPdf = async (url: string) => {
-    await Browser.open({
-      url,
-      windowName: "_system",
-    });
-  };
-  // 🔹 Descarga amigable para web + móvil (Capacitor)
-  const downloadPdf = (url: string, title: string) => {
-    if (!url) return;
-
-    // Heurística simple para móvil
-    const isMobileUA =
-      typeof navigator !== "undefined" &&
-      /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-    if (isMobileUA) {
-      // En WebView suele ir mejor abrir en navegador
-      window.open(url, "_blank");
-      return;
-    }
-
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = title || "documento";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
   const itemsPerPage = 3;
@@ -390,7 +362,7 @@ export default function RecursosEstudiante() {
                                   variant="outline"
                                   size="sm"
                                   className="w-full sm:flex-1 bg-transparent text-xs sm:text-sm justify-center gap-1 sm:gap-2 px-2 sm:px-4"
-                                  onClick={() => openPdf(guia.documento)}
+                                  onClick={() => downloadFile(guia.documento)}
                                 >
                                   <Download className="h-4 w-4" />
                                   <span>Descargar</span>
@@ -438,7 +410,7 @@ export default function RecursosEstudiante() {
                               size="sm"
                               className="flex-1 bg-transparent "
                               onClick={() =>
-                                downloadPdf(
+                                downloadFile(
                                   buildFileUrl(guia.documento),
                                   guia.titulo
                                 )
