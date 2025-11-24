@@ -25,7 +25,7 @@ export default function DeliveriesPage() {
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<
-    "all" | "pendientes" | "terminados"
+    "all" | "en-proceso" | "entregado" | "terminado"
   >("all");
 
   const user = useSelector((state: RootState) => state.auth.user);
@@ -74,11 +74,9 @@ export default function DeliveriesPage() {
     const matchesText = asunto.titulo
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
-    if (filterStatus === "pendientes")
-      return matchesText && ["entregado", "en-proceso"].includes(asunto.estado);
-    if (filterStatus === "terminados")
-      return matchesText && asunto.estado === "terminado";
-    return matchesText;
+
+    if (filterStatus === "all") return matchesText;
+    return matchesText && asunto.estado === filterStatus;
   });
 
   return (
@@ -137,40 +135,35 @@ export default function DeliveriesPage() {
                       setFilterStatus(v as typeof filterStatus)
                     }
                   >
-                    <SelectTrigger className="w-[110px] text-sm">
+                    <SelectTrigger className="w-[140px] text-sm">
                       <SelectValue placeholder="Todos" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Todos</SelectItem>
-                      <SelectItem value="pendientes">Pendientes</SelectItem>
-                      <SelectItem value="terminados">Terminados</SelectItem>
+                      <SelectItem value="en-proceso">En Proceso</SelectItem>
+                      <SelectItem value="entregado">Entregado</SelectItem>
+                      <SelectItem value="terminado">Terminado</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 {/* 🟡 Pendientes */}
-                {(filterStatus === "all" || filterStatus === "pendientes") && (
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <h3 className="font-semibold">Tus Avances</h3>
-                      <button className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline">
-                        Ver más
-                      </button>
-                    </div>
-
-                    <SubjectsList
-                      asuntos={filteredAsuntos.filter((a) =>
-                        ["entregado", "en-proceso", "terminado"].includes(
-                          a.estado
-                        )
-                      )}
-                      loading={loading}
-                      onEdit={handleEditSubject}
-                      onDelete={handleDeleteSubject}
-                      showActions={true}
-                    />
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-semibold">Tus Avances</h3>
+                    <button className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline">
+                      Ver más
+                    </button>
                   </div>
-                )}
+
+                  <SubjectsList
+                    asuntos={filteredAsuntos}
+                    loading={loading}
+                    onEdit={handleEditSubject}
+                    onDelete={handleDeleteSubject}
+                    showActions={true}
+                  />
+                </div>
               </div>
             ),
           },
