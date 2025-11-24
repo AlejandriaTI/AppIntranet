@@ -38,11 +38,8 @@ export default function DeliveriesPage() {
 
     const fetchAsuntos = async () => {
       try {
-        const [asuntos, terminados] = await Promise.all([
-          asuntosServices.getAllAsuntos(selectedAsesoriaId),
-          asuntosServices.getAsuntosTerminados(selectedAsesoriaId),
-        ]);
-        setSubjects([...asuntos, ...terminados]);
+        const asuntos = await asuntosServices.getAllAsuntos(selectedAsesoriaId);
+        setSubjects(asuntos);
       } catch (err) {
         console.error("❌ Error al cargar asuntos:", err);
       }

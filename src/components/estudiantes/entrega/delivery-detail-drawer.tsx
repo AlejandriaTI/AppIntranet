@@ -25,6 +25,8 @@ import {
   User,
   BookOpen,
   Download,
+  Trash2,
+  Edit2,
 } from "lucide-react";
 
 interface Document {
@@ -44,6 +46,10 @@ interface DeliveryDetailDrawerProps {
   fecha_estimada?: string;
   fecha_terminado?: string;
   documentos: Document[];
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 const statusConfig = {
@@ -99,6 +105,9 @@ export function DeliveryDetailDrawer({
   fecha_estimada,
   fecha_terminado,
   documentos,
+
+  onEdit,
+  onDelete,
 }: DeliveryDetailDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const StatusIcon = statusConfig[estado].icon;
@@ -110,12 +119,46 @@ export function DeliveryDetailDrawer({
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
-        <button className="w-full text-left p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
-          <p className="font-semibold text-foreground">{titulo}</p>
-          <p className="text-sm text-muted-foreground mt-1">
-            Entrega: {formatDate(fecha_entrega)}
-          </p>
-        </button>
+        <div className="w-full text-left p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-foreground">{titulo}</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Entrega: {formatDate(fecha_entrega)}
+              </p>
+            </div>
+
+            {(onEdit || onDelete) && (
+              <div
+                className="flex gap-2 mt-3 pt-3 border-t"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {onEdit && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit();
+                    }}
+                    className="flex items-center gap-2 px-3 py-1.5 text-sm border rounded-md hover:bg-accent transition-colors"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                )}
+                {onDelete && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete();
+                    }}
+                    className="flex items-center gap-2 px-3 py-1.5 text-sm border rounded-md hover:bg-accent transition-colors text-destructive"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </DrawerTrigger>
 
       <DrawerContent className="max-h-[90vh] overflow-hidden flex flex-col">

@@ -1,24 +1,30 @@
-import { SubjectRow } from "./subject-row"
-import { EmptyState } from "./empty-state"
-import { Skeleton } from "@/components/ui/skeleton"
+import { SubjectRow } from "./subject-row";
+import { EmptyState } from "./empty-state";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Subject {
-  id: string
-  title: string
-  dueDate: string
-  status: "entregado" | "en-proceso" | "terminado"
-  document?: string
+  id: string;
+  title: string;
+  dueDate: string;
+  status: "entregado" | "en-proceso" | "terminado";
+  document?: string;
 }
 
 interface SubjectsListProps {
-  subjects: Subject[]
-  loading?: boolean
-  onEdit?: (id: string) => void
-  onDelete?: (id: string) => void
-  showActions?: boolean
+  subjects: Subject[];
+  loading?: boolean;
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
+  showActions?: boolean;
 }
 
-export function SubjectsList({ subjects, loading, onEdit, onDelete, showActions }: SubjectsListProps) {
+export function SubjectsList({
+  subjects,
+  loading,
+  onEdit,
+  onDelete,
+  showActions,
+}: SubjectsListProps) {
   if (loading) {
     return (
       <div className="space-y-3">
@@ -26,11 +32,11 @@ export function SubjectsList({ subjects, loading, onEdit, onDelete, showActions 
           <Skeleton key={i} className="h-16 w-full rounded-lg" />
         ))}
       </div>
-    )
+    );
   }
 
   if (subjects.length === 0) {
-    return <EmptyState message="No hay entregas realizadas" />
+    return <EmptyState message="No hay entregas realizadas" />;
   }
 
   return (
@@ -41,9 +47,9 @@ export function SubjectsList({ subjects, loading, onEdit, onDelete, showActions 
           {...subject}
           onEdit={() => onEdit?.(subject.id)}
           onDelete={() => onDelete?.(subject.id)}
-          showActions={showActions}
+          showActions={showActions} // ← OBLIGATORIO si quieres ver botones
         />
       ))}
     </div>
-  )
+  );
 }
