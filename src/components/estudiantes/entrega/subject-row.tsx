@@ -174,32 +174,45 @@ export function SubjectRow({
         onEdit={() => setOpenEdit(true)}
         onDelete={() => setOpenDelete(true)}
       />
-
       <Dialog open={openEdit} onOpenChange={setOpenEdit}>
-        <DialogContent className="sm:max-w-md rounded-xl shadow-lg border bg-white">
-          <DialogHeader className="border-b pb-3">
-            <DialogTitle>Editar Asunto</DialogTitle>
+        <DialogContent className="sm:max-w-md rounded-xl shadow-lg border bg-white dark:bg-slate-900 animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95">
+          <DialogHeader className="border-b pb-3 dark:border-slate-700">
+            <DialogTitle className="text-slate-900 dark:text-white">
+              Editar Asunto
+            </DialogTitle>
           </DialogHeader>
 
           <div className="grid gap-5 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="titulo">Título</Label>
+              <Label
+                htmlFor="titulo"
+                className="text-slate-700 dark:text-slate-200"
+              >
+                Título
+              </Label>
               <Input
                 id="titulo"
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
                 placeholder="Ej. Informe semanal"
+                className="bg-white dark:bg-slate-800 dark:text-white dark:border-slate-700"
               />
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="archivos">Archivos</Label>
+              <Label
+                htmlFor="archivos"
+                className="text-slate-700 dark:text-slate-200"
+              >
+                Archivos
+              </Label>
+
               {existingFiles.length > 0 && (
-                <div className="flex flex-col gap-2 rounded-md border bg-gray-50 p-2 text-sm text-gray-700">
+                <div className="flex flex-col gap-2 rounded-md border bg-gray-50 dark:bg-slate-800 p-2 text-sm text-gray-700 dark:text-slate-200 dark:border-slate-700">
                   {existingFiles.map((doc, i) => (
                     <div
                       key={i}
-                      className="flex items-center justify-between rounded-md bg-white border px-2 py-1 shadow-sm"
+                      className="flex items-center justify-between rounded-md bg-white dark:bg-slate-700 border px-2 py-1 shadow-sm dark:border-slate-600"
                     >
                       <div className="flex items-center gap-2 truncate">
                         <Paperclip className="w-4 h-4 text-blue-500" />
@@ -216,18 +229,29 @@ export function SubjectRow({
                   ))}
                 </div>
               )}
+
               <Input
                 id="archivos"
                 type="file"
                 multiple
                 onChange={handleFileChange}
+                className="bg-white dark:bg-slate-800 dark:text-white dark:border-slate-700"
               />
             </div>
           </div>
 
           <DialogFooter className="flex flex-col sm:flex-row gap-2 pt-2">
-            <Button onClick={handleSaveEdit}>Guardar</Button>
-            <Button variant="outline" onClick={() => setOpenEdit(false)}>
+            <Button
+              onClick={handleSaveEdit}
+              className="bg-blue-600 text-white hover:bg-blue-700"
+            >
+              Guardar
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setOpenEdit(false)}
+              className="border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 dark:bg-slate-800"
+            >
               Cancelar
             </Button>
           </DialogFooter>

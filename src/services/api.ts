@@ -1,5 +1,6 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 import { Capacitor } from "@capacitor/core";
+import { Preferences } from "@capacitor/preferences";
 
 // 🔍 Detecta plataforma (web / android / ios)
 const platform = Capacitor.getPlatform();
@@ -25,12 +26,14 @@ const api = axios.create({
 });
 
 // 🧠 Interceptor: adjunta token JWT si existe
-api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
+  try {
+    const { value } = await Preferences.get({ key: "authToken" });
+    if (value) {
+      config.headers.Authorization = `Bearer ${value}`;
     }
+  } catch (error) {
+    console.error("Error getting token from preferences", error);
   }
   return config;
 });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { DeliveryHeader } from "@/components/estudiantes/entrega/delivery-header";
 import { TabsSection } from "@/components/estudiantes/entrega/tabs-section";
 import { SubjectsList } from "@/components/estudiantes/entrega/subjects-list";
@@ -35,43 +35,44 @@ export default function DeliveriesPage() {
   const { asesorias, loading, selectedAsesoriaId, setSelectedAsesoriaId } =
     useAsesorias(idCliente);
 
-  useEffect(() => {
-    if (!selectedAsesoriaId) return;
+  const fetchAsuntos = useCallback(async (id: number) => {
+    try {
+      const data = await asuntosServices.getAsuntosGlobal(id);
+      setAsuntos(data);
 
-    const fetchAsuntos = async () => {
-      try {
-        const data = await asuntosServices.getAsuntosGlobal(selectedAsesoriaId);
-        setAsuntos(data);
-      } catch (err) {
-        console.error("❌ Error al cargar asuntos:", err);
+      // También refrescar documentos si es necesario
+      console.log("🔍 Fetching documents for asesoriaId:", id);
+      const docs = await asuntosServices.getDocumentsAsesoria(id);
+      setDocuments(docs);
+    } catch (err) {
+      console.error("❌ Error al recargar datos:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    const loadData = async () => {
+      if (selectedAsesoriaId) {
+        await fetchAsuntos(selectedAsesoriaId);
       }
     };
-    fetchAsuntos();
-  }, [selectedAsesoriaId]);
+    loadData();
+  }, [selectedAsesoriaId, fetchAsuntos]);
 
-  useEffect(() => {
-    if (!selectedAsesoriaId) return;
-    const fetchDocuments = async () => {
-      try {
-        console.log(
-          "🔍 Fetching documents for asesoriaId:",
-          selectedAsesoriaId
-        );
-        const docs = await asuntosServices.getDocumentsAsesoria(
-          selectedAsesoriaId
-        );
-        console.log("✅ Documents received:", docs);
-        setDocuments(docs);
-      } catch (err) {
-        console.error("❌ Error al cargar documentos:", err);
-      }
-    };
-    fetchDocuments();
-  }, [selectedAsesoriaId]);
+  const refreshData = useCallback(() => {
+    if (selectedAsesoriaId) {
+      fetchAsuntos(selectedAsesoriaId);
+    }
+  }, [selectedAsesoriaId, fetchAsuntos]);
 
-  const handleEditSubject = (id: string) => console.log("Editar asunto:", id);
-  const handleDeleteSubject = (id: string) =>
-    console.log("Eliminar asunto:", id);
+  const handleEditSubject = (id: string) => {
+    console.log("Asunto editado:", id);
+    refreshData();
+  };
+
+  const handleDeleteSubject = (id: string) => {
+    console.log("Asunto eliminado:", id);
+    refreshData();
+  };
 
   const filteredAsuntos = asuntos.filter((asunto) => {
     const matchesText = asunto.titulo
@@ -102,6 +103,7 @@ export default function DeliveriesPage() {
       <DeliveryHeader
         asesoriaId={selectedAsesoriaId ?? 0}
         showNewButton={!!selectedAsesoriaId} // solo se muestra si hay asesoría elegida
+        onSuccess={refreshData}
       />
       {/* 🎓 Selección de asesoría */}
       <Card className="p-6">
