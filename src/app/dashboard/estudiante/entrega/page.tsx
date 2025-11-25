@@ -18,11 +18,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useAsesorias } from "@/hooks/useAsesoria";
 import { asuntosServices } from "@/services/api/asuntos.services";
-import { DocumentItem, Asunto } from "@/services/interface/asuntos";
+import { Asunto, AsesoramientoDocumento } from "@/services/interface/asuntos";
+import { downloadFile } from "@/utils/downloadFile";
+import Link from "next/link";
 
 export default function DeliveriesPage() {
   const [asuntos, setAsuntos] = useState<Asunto[]>([]);
-  const [documents, setDocuments] = useState<DocumentItem[]>([]);
+  const [documents, setDocuments] = useState<AsesoramientoDocumento[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<
     "all" | "en-proceso" | "entregado" | "terminado"
@@ -51,11 +53,15 @@ export default function DeliveriesPage() {
     if (!selectedAsesoriaId) return;
     const fetchDocuments = async () => {
       try {
-        const [estudianteDocs, asesorDocs] = await Promise.all([
-          asuntosServices.getDocumentsClient(selectedAsesoriaId),
-          asuntosServices.getDocumentsAsesor(selectedAsesoriaId),
-        ]);
-        setDocuments([...estudianteDocs, ...asesorDocs]);
+        console.log(
+          "🔍 Fetching documents for asesoriaId:",
+          selectedAsesoriaId
+        );
+        const docs = await asuntosServices.getDocumentsAsesoria(
+          selectedAsesoriaId
+        );
+        console.log("✅ Documents received:", docs);
+        setDocuments(docs);
       } catch (err) {
         console.error("❌ Error al cargar documentos:", err);
       }
@@ -67,9 +73,6 @@ export default function DeliveriesPage() {
   const handleDeleteSubject = (id: string) =>
     console.log("Eliminar asunto:", id);
 
-  const handleDownload = (url: string) => window.open(url, "_blank");
-
-  // 🔎 Filtro dinámico por texto + estado
   const filteredAsuntos = asuntos.filter((asunto) => {
     const matchesText = asunto.titulo
       .toLowerCase()
@@ -79,8 +82,23 @@ export default function DeliveriesPage() {
     return matchesText && asunto.estado === filterStatus;
   });
 
+  const mappedDocuments = documents.map((doc) => ({
+    id: doc.id.toString(),
+    tipo: "asesor" as const,
+    title: doc.titulo,
+    date: new Date(doc.fecha).toLocaleDateString(),
+    status: "Disponible",
+    documentos: doc.archivos.map((file) => ({
+      name: file.url,
+      url: file.signedUrl,
+    })),
+  }));
+
+  console.log("📄 Documents from API:", documents);
+  console.log("📋 Mapped documents:", mappedDocuments);
+
   return (
-    <main className="container mx-auto py-8 px-4 space-y-8">
+    <section className="container mx-auto py-8 px-4 space-y-8">
       <DeliveryHeader
         asesoriaId={selectedAsesoriaId ?? 0}
         showNewButton={!!selectedAsesoriaId} // solo se muestra si hay asesoría elegida
@@ -151,9 +169,12 @@ export default function DeliveriesPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <h3 className="font-semibold">Tus Avances</h3>
-                    <button className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline">
+                    <Link
+                      href="/dashboard/estudiante/entrega/vermas"
+                      className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline"
+                    >
                       Ver más
-                    </button>
+                    </Link>
                   </div>
 
                   <SubjectsList
@@ -175,20 +196,11 @@ export default function DeliveriesPage() {
             content: (
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <h3 className="font-semibold">Mis envíos</h3>
+                  <h3 className="font-semibold">Otros Documentos</h3>
                   <DocumentsList
-                    documents={documents.filter((d) => d.tipo === "usuario")}
+                    documents={mappedDocuments}
                     loading={loading}
-                    onDownload={handleDownload}
-                  />
-                </div>
-
-                <div className="space-y-2 mt-6">
-                  <h3 className="font-semibold">Envíos del asesor</h3>
-                  <DocumentsList
-                    documents={documents.filter((d) => d.tipo === "asesor")}
-                    loading={loading}
-                    onDownload={handleDownload}
+                    onDownload={downloadFile}
                   />
                 </div>
               </div>
@@ -196,6 +208,6 @@ export default function DeliveriesPage() {
           },
         ]}
       />
-    </main>
+    </section>
   );
 }

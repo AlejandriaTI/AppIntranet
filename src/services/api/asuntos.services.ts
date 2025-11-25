@@ -6,6 +6,7 @@ import {
   AsuntoAPI,
   AsuntoTerminadoAPI,
   Asunto,
+  AsesoramientoDocumento,
 } from "@/services/interface/asuntos";
 import {
   mapToDocumentItems,
@@ -53,9 +54,29 @@ async function getAsuntosTerminados(
   return mapToFinishedSubjectItems(data as AsuntoTerminadoResponse);
 }
 
-export async function getAsuntosGlobal(idAsesoria: number): Promise<Asunto[]> {
+async function getAsuntosGlobal(idAsesoria: number): Promise<Asunto[]> {
   const response = await api.get(`asuntos/global/${idAsesoria}`);
   return response.data?.data ?? [];
+}
+
+async function getDocumentsAsesoria(
+  idAsesoria: number
+): Promise<AsesoramientoDocumento[]> {
+  const response = await api.get(
+    `asesoramiento-documentos/listar/${idAsesoria}`
+  );
+
+  console.log("🔍 Full API Response:", response);
+  console.log("🔍 Response.data:", response.data);
+
+  // La API retorna el array directamente en response.data, no en response.data.data
+  const data = Array.isArray(response.data)
+    ? response.data
+    : response.data?.data ?? [];
+
+  console.log("🔍 Extracted data:", data);
+
+  return data as AsesoramientoDocumento[];
 }
 
 export const asuntosServices = {
@@ -64,4 +85,5 @@ export const asuntosServices = {
   getAllAsuntos,
   getAsuntosTerminados,
   getAsuntosGlobal,
+  getDocumentsAsesoria,
 };

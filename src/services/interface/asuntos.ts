@@ -1,4 +1,3 @@
-// 📁 Documento base (del backend)
 export interface Documento {
   nombre: string;
   ruta: string;
@@ -19,7 +18,6 @@ export interface EntregaDetalleItem {
   documentos: Documento[];
 }
 
-// 📁 Asunto completo (con documentos)
 export interface Asunto {
   id_asunto: string;
   titulo: string;
@@ -34,14 +32,12 @@ export interface Asunto {
   documentos: Documento[];
 }
 
-// 📁 Respuesta del backend con todos los asuntos
 export interface ListadoGlobalizadoResponse {
   mensaje: string;
   total_asuntos: number;
   data: Asunto[];
 }
 
-// 📁 Vista simplificada para tabla/listado general
 export interface AsuntoAPI {
   id_asunto: string;
   titulo: string;
@@ -54,7 +50,6 @@ export interface AsuntoAPI {
   documento_0?: string; // solo el primero si se requiere en tabla
 }
 
-// 📁 Vista específica para asuntos terminados
 export interface AsuntoTerminadoAPI {
   id: string;
   titulo_asesor: string;
@@ -64,7 +59,6 @@ export interface AsuntoTerminadoAPI {
   estado: string;
 }
 
-// 📁 Adaptación para UI de tarjetas o listas
 export interface SubjectItem {
   id: string;
   title: string;
@@ -73,7 +67,6 @@ export interface SubjectItem {
   document?: string;
 }
 
-// 📁 Adaptación para vista de documentos por asunto
 export interface DocumentItem {
   id: string;
   tipo: "usuario" | "asesor";
@@ -86,7 +79,21 @@ export interface DocumentItem {
   }[];
 }
 
-// 📁 DocumentoAPI para consumo si se quiere "aplanar"
+export interface AsesoramientoDocumentoArchivo {
+  id: number;
+  documento_id: number;
+  url: string;
+  signedUrl: string; // ← viene del backend
+}
+
+export interface AsesoramientoDocumento {
+  id: number;
+  asesoramiento_id: number;
+  titulo: string;
+  fecha: string; // tipo date del backend
+  archivos: AsesoramientoDocumentoArchivo[];
+}
+
 export interface DocumentoAPI {
   id_asunto: string;
   estado: string;

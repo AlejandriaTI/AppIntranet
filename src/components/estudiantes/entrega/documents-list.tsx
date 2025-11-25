@@ -13,7 +13,7 @@ interface DocumentItem {
   title: string;
   date: string;
   status: string;
-  documents: Document[];
+  documentos: Document[];
 }
 
 interface DocumentsListProps {
