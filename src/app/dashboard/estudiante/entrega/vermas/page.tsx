@@ -54,7 +54,7 @@ function VerMasContent() {
     <div className="min-h-screen dark:from-slate-950 dark:to-slate-900">
       <Header />
 
-      <main className="pb-8">
+      <section className="pb-8">
         <div className="max-w-2xl mx-auto px-4 pt-8">
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-2">
@@ -103,7 +103,7 @@ function VerMasContent() {
             )}
           </div>
         </div>
-      </main>
+      </section>
 
       {showDrawer && selectedSubject && (
         <SubjectDetailDrawer

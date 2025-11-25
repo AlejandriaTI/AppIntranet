@@ -112,8 +112,11 @@ export function SubjectCard({ subject, onViewMore }: SubjectCardProps) {
         </div>
 
         {/* Helpful hint */}
-        <div className="text-xs text-slate-500 dark:text-slate-400 italic pt-2">
-          Toca para ver más detalles
+        <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 italic pt-2">
+          <span>Toca para ver más detalles</span>
+          <span className="ml-2 text-slate-400 dark:text-slate-500 not-italic font-normal">
+            {new Date(subject.fecha_principal).getFullYear()}
+          </span>
         </div>
       </CardContent>
     </Card>

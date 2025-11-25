@@ -70,7 +70,7 @@ export function SubjectDetailDrawer({
 
       {/* Drawer lateral */}
       <div
-        className={`fixed right-0 top-16 bottom-4 z-50 w-full md:w-96 max-h-[calc(100vh-5rem)] bg-background dark:bg-slate-950 shadow-2xl flex flex-col overflow-hidden rounded-t-2xl md:rounded-l-2xl animate-in slide-in-from-right transition-transform duration-300 ${
+        className={`fixed right-0 bottom-0 z-50 w-full md:w-96 h-[85vh] bg-background dark:bg-slate-950 shadow-2xl flex flex-col overflow-hidden rounded-tl-2xl animate-in slide-in-from-right transition-transform duration-300 ${
           isClosing ? "translate-x-full" : ""
         }`}
       >

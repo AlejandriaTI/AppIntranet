@@ -95,9 +95,6 @@ export default function DeliveriesPage() {
     })),
   }));
 
-  console.log("📄 Documents from API:", documents);
-  console.log("📋 Mapped documents:", mappedDocuments);
-
   return (
     <section className="container mx-auto py-8 px-4 space-y-8">
       <DeliveryHeader

@@ -66,15 +66,9 @@ async function getDocumentsAsesoria(
     `asesoramiento-documentos/listar/${idAsesoria}`
   );
 
-  console.log("🔍 Full API Response:", response);
-  console.log("🔍 Response.data:", response.data);
-
-  // La API retorna el array directamente en response.data, no en response.data.data
   const data = Array.isArray(response.data)
     ? response.data
     : response.data?.data ?? [];
-
-  console.log("🔍 Extracted data:", data);
 
   return data as AsesoramientoDocumento[];
 }
