@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { User, BookMarked, Calendar, ChevronLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +23,15 @@ export function SubjectDetailDrawer({
       document.body.style.overflow = "auto";
     };
   }, []);
+
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+    }, 300);
+  };
 
   const getStatusColor = (estado: string) => {
     switch (estado) {
@@ -49,14 +58,23 @@ export function SubjectDetailDrawer({
   return (
     <>
       {/* Fondo / Backdrop */}
-      <div className="fixed inset-0 z-40 bg-black/40" onClick={onClose} />
+      <div
+        className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 ${
+          isClosing ? "opacity-0" : "opacity-100"
+        }`}
+        onClick={handleClose}
+      />
 
       {/* Drawer lateral */}
-      <div className="fixed right-0 top-16 bottom-4 z-50 w-full md:w-96 max-h-[calc(100vh-5rem)] bg-background dark:bg-slate-950 shadow-2xl flex flex-col overflow-hidden rounded-t-2xl md:rounded-l-2xl animate-in slide-in-from-right duration-300">
+      <div
+        className={`fixed right-0 top-16 bottom-4 z-50 w-full md:w-96 max-h-[calc(100vh-5rem)] bg-background dark:bg-slate-950 shadow-2xl flex flex-col overflow-hidden rounded-t-2xl md:rounded-l-2xl animate-in slide-in-from-right transition-transform duration-300 ${
+          isClosing ? "translate-x-full" : ""
+        }`}
+      >
         {/* Header sin azul, con flecha */}
         <div className="flex-none flex items-center gap-3 border-b bg-background/95 dark:bg-slate-950/95 px-4 py-3 backdrop-blur">
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             aria-label="Cerrar"
           >
