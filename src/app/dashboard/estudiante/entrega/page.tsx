@@ -170,8 +170,16 @@ export default function DeliveriesPage() {
                   <div className="flex justify-between items-center">
                     <h3 className="font-semibold">Tus Avances</h3>
                     <Link
-                      href="/dashboard/estudiante/entrega/vermas"
-                      className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline"
+                      href={
+                        selectedAsesoriaId
+                          ? `/dashboard/estudiante/entrega/vermas?id_asesoria=${selectedAsesoriaId}`
+                          : "#"
+                      }
+                      className={`text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline ${
+                        !selectedAsesoriaId
+                          ? "pointer-events-none opacity-50"
+                          : ""
+                      }`}
                     >
                       Ver más
                     </Link>

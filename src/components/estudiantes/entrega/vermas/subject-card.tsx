@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Calendar } from "lucide-react";
 import { formatDate } from "@/lib/date-utils";
+import { Asunto } from "@/services/interface/asuntos";
 
 interface SubjectCardProps {
-  subject: any;
+  subject: Asunto;
   onViewMore: () => void;
 }
 
@@ -17,7 +18,7 @@ export function SubjectCard({ subject, onViewMore }: SubjectCardProps) {
         return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
       case "entregado":
         return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
-      case "en_revision":
+      case "proceso":
         return "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300";
       default:
         return "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200";
@@ -30,8 +31,8 @@ export function SubjectCard({ subject, onViewMore }: SubjectCardProps) {
         return "✓ Terminado";
       case "entregado":
         return "📤 Entregado";
-      case "en_revision":
-        return "👀 En revisión";
+      case "proceso":
+        return "👀 En proceso";
       default:
         return estado;
     }
@@ -43,23 +44,28 @@ export function SubjectCard({ subject, onViewMore }: SubjectCardProps) {
       className="hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 cursor-pointer group border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
     >
       <CardHeader className="pb-4 space-y-3">
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start justify-between gap-3">
+          {/* Texto */}
           <div className="flex-1 min-w-0">
-            <CardTitle className="text-lg font-semibold text-slate-900 dark:text-slate-50 truncate mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+            <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-50 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
               {subject.titulo}
             </CardTitle>
-            <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+            <p className="mt-1 text-xs text-slate-600 dark:text-slate-400 line-clamp-1 sm:line-clamp-2">
               {subject.profesion_asesoria}
             </p>
           </div>
-          <Badge
-            variant="outline"
-            className={`${getStatusColor(
-              subject.estado
-            )} whitespace-nowrap text-xs font-medium shrink-0`}
-          >
-            {getStatusLabel(subject.estado)}
-          </Badge>
+
+          {/* Badge bien contenido */}
+          <div className="shrink-0 self-start">
+            <Badge
+              variant="outline"
+              className={`${getStatusColor(
+                subject.estado
+              )} px-2 py-0.5 max-w-[90px] text-[10px] font-medium leading-tight text-center`}
+            >
+              {getStatusLabel(subject.estado)}
+            </Badge>
+          </div>
         </div>
       </CardHeader>
 

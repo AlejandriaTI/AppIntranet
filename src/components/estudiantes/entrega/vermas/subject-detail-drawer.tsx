@@ -7,9 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDate } from "@/lib/date-utils";
 import { DocumentSection } from "./document-section";
+import { Asunto } from "@/services/interface/asuntos";
 
 interface SubjectDetailDrawerProps {
-  subject: any;
+  subject: Asunto;
   onClose: () => void;
 }
 
@@ -50,6 +51,8 @@ export function SubjectDetailDrawer({
         return "✓ Terminado";
       case "entregado":
         return "📤 Entregado";
+      case "proceso":
+        return "👀 En proceso";
       default:
         return estado;
     }

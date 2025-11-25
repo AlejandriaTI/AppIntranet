@@ -5,9 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { formatDate } from "@/lib/date-utils";
+import { downloadFile } from "@/utils/downloadFile";
+import { Asunto, Documento } from "@/services/interface/asuntos";
 
 interface DocumentSectionProps {
-  subject: any;
+  subject: Asunto;
 }
 
 export function DocumentSection({ subject }: DocumentSectionProps) {
@@ -47,10 +49,10 @@ export function DocumentSection({ subject }: DocumentSectionProps) {
   };
 
   const studentDocs = subject.documentos.filter(
-    (d: any) => d.subido_por === "estudiante"
+    (d: Documento) => d.subido_por === "estudiante"
   );
   const advisorDocs = subject.documentos.filter(
-    (d: any) => d.subido_por === "asesor"
+    (d: Documento) => d.subido_por === "asesor"
   );
 
   return (
@@ -65,7 +67,7 @@ export function DocumentSection({ subject }: DocumentSectionProps) {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {studentDocs.map((doc: any, idx: number) => (
+              {studentDocs.map((doc: Documento, idx: number) => (
                 <div
                   key={idx}
                   className={`p-4 rounded-lg border ${getFileColor(
@@ -96,7 +98,7 @@ export function DocumentSection({ subject }: DocumentSectionProps) {
                       size="sm"
                       variant="ghost"
                       className="shrink-0 hover:bg-purple-200 dark:hover:bg-purple-800 text-slate-600 dark:text-slate-400"
-                      onClick={() => window.open(doc.ruta, "_blank")}
+                      onClick={() => downloadFile(doc.ruta)}
                     >
                       <Download className="w-4 h-4" />
                     </Button>
@@ -118,7 +120,7 @@ export function DocumentSection({ subject }: DocumentSectionProps) {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {advisorDocs.map((doc: any, idx: number) => (
+              {advisorDocs.map((doc: Documento, idx: number) => (
                 <div
                   key={idx}
                   className={`p-4 rounded-lg border ${getFileColor(
@@ -149,7 +151,7 @@ export function DocumentSection({ subject }: DocumentSectionProps) {
                       size="sm"
                       variant="ghost"
                       className="shrink-0 hover:bg-green-200 dark:hover:bg-green-800 text-slate-600 dark:text-slate-400"
-                      onClick={() => window.open(doc.ruta, "_blank")}
+                      onClick={() => downloadFile(doc.ruta)}
                     >
                       <Download className="w-4 h-4" />
                     </Button>
