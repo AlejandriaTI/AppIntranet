@@ -90,7 +90,7 @@ export function SubjectCard({ subject, onViewMore }: SubjectCardProps) {
               <p className="text-xs text-slate-600 dark:text-slate-400">
                 Archivos
               </p>
-              <p className="text-sm font-semibold text-slate-900 dark:text-slate-50">
+              <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">
                 {subject.documentos.length}
               </p>
             </div>
@@ -101,7 +101,7 @@ export function SubjectCard({ subject, onViewMore }: SubjectCardProps) {
               <p className="text-xs text-slate-600 dark:text-slate-400">
                 Fecha
               </p>
-              <p className="text-sm font-semibold text-slate-900 dark:text-slate-50 truncate">
+              <p className="text-xs font-semibold text-slate-900 dark:text-slate-50 truncate">
                 {formatDate(subject.fecha_principal)
                   .split(" ")
                   .slice(0, 3)

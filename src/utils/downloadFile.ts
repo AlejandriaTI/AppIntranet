@@ -13,8 +13,13 @@ export async function downloadFile(
 ): Promise<void> {
   try {
     // Extraer el nombre del archivo de la URL si no se proporciona
-    const finalFileName =
+    let finalFileName =
       fileName || decodeURIComponent(url.split("/").pop() || "documento");
+
+    // Asegurar que el nombre del archivo no contenga rutas
+    if (finalFileName.includes("/")) {
+      finalFileName = finalFileName.split("/").pop() || "documento";
+    }
 
     // Verificar si estamos en una plataforma nativa (iOS/Android)
     const isNative = Capacitor.isNativePlatform();

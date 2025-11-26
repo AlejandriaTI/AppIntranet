@@ -90,8 +90,8 @@ export default function DeliveriesPage() {
     date: new Date(doc.fecha).toLocaleDateString(),
     status: "Disponible",
     documentos: doc.archivos.map((file) => ({
-      name: file.url,
-      url: file.signedUrl,
+      name: decodeURIComponent(file.url.split("/").pop() || "documento"),
+      url: file.signedUrl || file.url,
     })),
   }));
 
