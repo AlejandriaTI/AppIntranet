@@ -27,11 +27,11 @@ export default function LoginPage() {
 
   useEffect(() => {
     const checkSession = async () => {
-      const { user, token } = await loadAuthData();
+      const { user, token, tokenExpiry } = await loadAuthData();
 
       // Si hay sesión guardada, restaurarla y redirigir
       if (user && token) {
-        dispatch(restoreSession({ user, token }));
+        dispatch(restoreSession({ user, token, tokenExpiry }));
 
         const rolUsuario = user.rol?.toLowerCase();
         const primerLink = LINKS[rolUsuario]?.[0]?.path ?? "/dashboard";
@@ -64,11 +64,12 @@ export default function LoginPage() {
         throw new Error("Respuesta inválida del servidor");
       }
 
-      // Guardar en Redux
+      // Guardar en Redux (el backend devuelve expires_in de 3 horas)
       dispatch(
         loginSuccess({
           datos_usuario: userData,
           access_token: token,
+          expires_in: 10800, // 3 horas (3h = 10800 segundos)
         })
       );
 
