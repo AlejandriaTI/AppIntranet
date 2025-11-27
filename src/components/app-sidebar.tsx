@@ -76,8 +76,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           user={{
             name: user.nombre,
             email: user.email,
-            avatar: getInitials(user.nombre), 
-            rol: user.rol// 👈 ahora es "DS" o "EP" o "HS"
+            avatar: getInitials(user.nombre),
+            rol: user.rol, // 👈 ahora es "DS" o "EP" o "HS"
           }}
         />
       </SidebarFooter>
