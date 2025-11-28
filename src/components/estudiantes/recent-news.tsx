@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
@@ -100,25 +99,40 @@ export function RecentNews() {
           className="flex gap-6 overflow-hidden w-[260px] sm:w-[300px] lg:w-[330px] snap-x snap-mandatory"
         >
           {noticias.map((item) => (
-            <Card
+            <div
               key={item.id}
               onClick={() => setSelectedNoticia(item)}
-              className="snap-center shrink-0 w-full cursor-pointer rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-background"
+              className="snap-center shrink-0 w-full cursor-pointer hover:-translate-y-1 transition-all duration-300"
             >
-              <img
-                src={item.imagen || "/placeholder.svg"}
-                alt={item.titulo}
-                className="w-full h-48 object-cover rounded-t-2xl"
-              />
-              <CardContent className="p-4 rounded-b-2xl bg-primary text-primary-foreground">
-                <p className="text-sm font-semibold line-clamp-2">
-                  {item.titulo}
-                </p>
-                <span className="text-xs mt-2 opacity-75 hover:opacity-100">
-                  Ver más →
-                </span>
-              </CardContent>
-            </Card>
+              <div className="w-full max-w-sm bg-card rounded-lg border border-border overflow-hidden hover:shadow-md transition-shadow">
+                {/* Accent bar */}
+                <div className="h-1 bg-primary" />
+
+                {/* Image */}
+                <div className="h-40 bg-muted overflow-hidden">
+                  <img
+                    src={item.imagen || "/placeholder.svg"}
+                    alt={item.titulo}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+
+                {/* Content */}
+                <div className="p-4">
+                  <h3 className="text-sm font-semibold text-primary uppercase tracking-wide">
+                    Noticia
+                  </h3>
+
+                  <h2 className="text-lg font-semibold text-card-foreground mt-2 line-clamp-2">
+                    {item.titulo}
+                  </h2>
+
+                  <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+                    {item.descripcion}
+                  </p>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
 
@@ -146,34 +160,37 @@ export function RecentNews() {
         )}
       </div>
 
-      {/* Modal elegante tipo tarjeta */}
+      {/* Modal mejorado */}
       <Dialog
         open={!!selectedNoticia}
         onOpenChange={() => setSelectedNoticia(null)}
       >
-        <DialogContent className="max-w-[550px] w-[90vw] p-0 rounded-2xl shadow-xl border border-border/40 overflow-hidden">
+        <DialogContent className="max-w-[620px] w-[92vw] p-0 rounded-2xl shadow-xl border border-border/30 overflow-hidden bg-background">
           {selectedNoticia && (
-            <div className="flex flex-col sm:flex-row bg-background">
+            <div className="flex flex-col sm:flex-row group">
               {/* Imagen vertical */}
-              <div className="sm:w-[180px] w-full h-[220px] sm:h-auto overflow-hidden">
+              <div className="sm:w-[240px] w-full h-[220px] sm:h-auto overflow-hidden relative">
                 <img
                   src={selectedNoticia.imagen}
                   alt={selectedNoticia.titulo}
-                  className="object-cover w-full h-full sm:rounded-l-2xl"
+                  className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
                 />
               </div>
 
-              {/* Texto alineado */}
-              <div className="flex flex-col justify-center p-6 sm:w-[calc(100%-180px)]">
-                <h3 className="text-lg font-semibold text-foreground leading-snug">
-                  {selectedNoticia.titulo}
-                </h3>
-                <p className="text-xs text-muted-foreground mt-1 mb-3">
-                  Noticia destacada de Alejandría Consultores
-                </p>
-                <p className="text-sm text-foreground leading-relaxed mb-6">
-                  {selectedNoticia.descripcion}
-                </p>
+              {/* Texto */}
+              <div className="flex flex-col justify-between p-6 sm:w-[calc(100%-240px)]">
+                <div>
+                  <h3 className="text-xl font-semibold text-foreground">
+                    {selectedNoticia.titulo}
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-1 mb-4">
+                    Noticia destacada · Alejandría Consultores
+                  </p>
+
+                  <p className="text-sm text-foreground leading-relaxed mb-6">
+                    {selectedNoticia.descripcion}
+                  </p>
+                </div>
               </div>
             </div>
           )}

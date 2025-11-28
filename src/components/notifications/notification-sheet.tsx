@@ -100,19 +100,9 @@ export const NotificationSheet: React.FC = () => {
       </SheetTrigger>
       <SheetContent
         side="right"
-        className="
-    bg-white p-0 
-    w-[80vw]             /* 📱 75% del ancho en pantallas pequeñas */
-    sm:w-[400px]         /* 💻 ancho moderado en escritorio */
-    md:w-[420px]
-    max-w-full
-    shadow-2xl           /* 💫 sombra elegante */
-    border-l border-gray-200
-    transition-all duration-300 ease-in-out
-    pt-[env(safe-area-inset-top)]
-  "
+        className="bg-white p-0 w-[80vw] sm:w-[400px] md:w-[420px] max-w-full shadow-2xl border-l border-gray-200 transition-all duration-300 ease-in-out pt-[env(safe-area-inset-top)]"
       >
-        {/* 🔹 Encabezado */}
+        {/* Encabezado */}
         <SheetHeader className="px-6 py-4 border-b sticky top-0 z-10">
           <div className="flex items-center justify-between">
             <SheetTitle className="text-base font-semibold text-gray-800">
