@@ -112,9 +112,9 @@ export default function DashboardLayout({
     >
       <SidebarProvider>
         <AppSidebar />
-        <SidebarInset className="grid min-h-dvh grid-rows-[auto_1fr]">
+        <SidebarInset className="grid h-dvh w-full grid-rows-[auto_1fr] overflow-hidden">
           {/* HEADER */}
-          <header className="sticky top-0 z-40 flex h-16 items-center gap-2 border-b bg-background px-4 backdrop-blur supports-backdrop-filter:bg-background/80">
+          <header className="flex h-[calc(4rem+env(safe-area-inset-top))] items-center gap-2 border-b bg-background px-4 pt-[env(safe-area-inset-top)] backdrop-blur supports-backdrop-filter:bg-background/80">
             <div className="flex items-center gap-3">
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="h-6 mx-2" />

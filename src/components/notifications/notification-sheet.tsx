@@ -109,6 +109,7 @@ export const NotificationSheet: React.FC = () => {
     shadow-2xl           /* 💫 sombra elegante */
     border-l border-gray-200
     transition-all duration-300 ease-in-out
+    pt-[env(safe-area-inset-top)]
   "
       >
         {/* 🔹 Encabezado */}
