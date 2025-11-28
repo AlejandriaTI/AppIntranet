@@ -43,7 +43,7 @@ export default function MiAsesor() {
     { nombre: "Victor Alfonso", imagen: "/Perfil-asesores/Victor.png" },
     { nombre: "Hebert Wilder", imagen: "/Perfil-asesores/Heber.jpeg" },
     { nombre: "Christian Alexis", imagen: "/Perfil-asesores/Christian.jpeg" },
-    { nombre: "Antony", imagen: "/Perfil-asesores/Antony.png" },
+    { nombre: "Anthony", imagen: "/Perfil-asesores/Antony.png" },
     { nombre: "Brenda Lucia", imagen: "/Perfil-asesores/Brenda.jpg" },
     { nombre: "Olenka Ethel", imagen: "/Perfil-asesores/Olenka.jpg" },
     {
