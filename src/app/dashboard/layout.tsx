@@ -68,7 +68,7 @@ export default function DashboardLayout({
     initAuth();
   }, [dispatch]);
 
-  // 👇 Manejo del botón físico “Atrás” en Android
+  // Manejo del botón físico "Atrás" en Android
   React.useEffect(() => {
     let listener: PluginListenerHandle | null = null;
     let lastBackPress = 0;
@@ -110,11 +110,11 @@ export default function DashboardLayout({
       disableTransitionOnChange
       enableColorScheme={false}
     >
-      <SidebarProvider>
+      <SidebarProvider className="h-full w-full overflow-hidden">
         <AppSidebar />
-        <SidebarInset className="grid h-dvh w-full grid-rows-[auto_1fr] overflow-hidden">
+        <SidebarInset className="relative h-full w-full overflow-hidden">
           {/* HEADER */}
-          <header className="flex h-[calc(4rem+env(safe-area-inset-top))] items-center gap-2 border-b bg-background px-4 pt-[env(safe-area-inset-top)] backdrop-blur supports-backdrop-filter:bg-background/80">
+          <header className="fixed top-0 left-0 right-0 z-50 flex h-[calc(3.5rem+env(safe-area-inset-top))] items-center gap-2 border-b bg-background px-4 pt-[env(safe-area-inset-top)] backdrop-blur supports-backdrop-filter:bg-background/80">
             <div className="flex items-center gap-3">
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="h-6 mx-2" />
@@ -139,7 +139,7 @@ export default function DashboardLayout({
             <HeaderActions />
           </header>
 
-          <main className="overflow-auto bg-background px-4 pb-4 pt-2">
+          <main className="h-full overflow-auto bg-background px-4 pt-[calc(1.5rem+env(safe-area-inset-top)+0.5rem)] pb-[calc(2.5rem+env(safe-area-inset-bottom)+0.5rem)]">
             {children}
           </main>
 
