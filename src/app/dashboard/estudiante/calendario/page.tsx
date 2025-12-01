@@ -70,13 +70,8 @@ export default function CalendarioEstudiante() {
 
   const user = useSelector((state: RootState) => state.auth.user);
   const idCliente = user?.id_cliente;
-  const {
-    asesorias,
-    loading,
-    error,
-    selectedAsesoriaId,
-    setSelectedAsesoriaId,
-  } = useAsesorias(idCliente);
+  const { asesorias, selectedAsesoriaId, setSelectedAsesoriaId } =
+    useAsesorias(idCliente);
 
   const [eventosDia, setEventosDia] = useState<CalendarioEvento[]>([]);
   const months = useMemo(

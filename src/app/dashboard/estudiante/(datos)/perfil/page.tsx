@@ -30,9 +30,6 @@ export default function MiPerfil() {
   const user = useSelector((state: RootState) => state.auth.user);
   const idCliente = user?.id_cliente;
 
-  /* ------------------------------
-     ✅ useEffect CORREGIDO
-  --------------------------------*/
   useEffect(() => {
     if (!idCliente) return;
 
@@ -44,9 +41,6 @@ export default function MiPerfil() {
       );
   }, [idCliente]);
 
-  /* ------------------------------
-     ✅ Loading state
-  --------------------------------*/
   if (!perfilData) {
     return (
       <Card className="w-full max-w-3xl mx-auto mt-10 p-6">
@@ -55,9 +49,6 @@ export default function MiPerfil() {
     );
   }
 
-  /* ------------------------------
-     ✅ Iniciales tipadas
-  --------------------------------*/
   const iniciales =
     perfilData.nombre
       ?.split(" ")
@@ -66,9 +57,6 @@ export default function MiPerfil() {
       .toUpperCase()
       .slice(0, 2) || "?";
 
-  /* ------------------------------
-     ✅ UI shadcn limpia
-  --------------------------------*/
   return (
     <Card className="w-full max-w-3xl mx-auto mt-10">
       <CardHeader className="flex flex-row items-center gap-4">
@@ -116,9 +104,6 @@ export default function MiPerfil() {
   );
 }
 
-/* ------------------------------
- ✅ COMPONENTE FIELD REUTILIZABLE
---------------------------------*/
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-1">

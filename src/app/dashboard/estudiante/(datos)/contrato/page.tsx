@@ -15,7 +15,7 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowDownToLine, FileText, X } from "lucide-react";
+import { FileText } from "lucide-react";
 import { useAsesorias } from "@/hooks/useAsesoria";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";

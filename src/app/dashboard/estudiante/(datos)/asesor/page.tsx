@@ -34,7 +34,7 @@ export default function MiAsesor() {
   const idCliente = user?.id_cliente;
 
   // ✅ Hook que trae asesorías del cliente
-  const { asesorias, loading, selectedAsesoriaId, setSelectedAsesoriaId } =
+  const { asesorias, selectedAsesoriaId, setSelectedAsesoriaId } =
     useAsesorias(idCliente);
 
   // ✅ Lista de imágenes en /public

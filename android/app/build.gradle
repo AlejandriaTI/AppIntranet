@@ -7,8 +7,8 @@ android {
         applicationId "com.aleja.pe"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 5
-        versionName "1.3.2"
+        versionCode 6 //esto sube cada que vas a colocar cambios en la app
+        versionName "1.3.3" // esto tambien buena practica
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
