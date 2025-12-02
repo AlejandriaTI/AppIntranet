@@ -9,9 +9,6 @@ import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 
-/* ------------------------------
- ✅ TIPO CORRECTO DEL PERFIL
---------------------------------*/
 type Perfil = {
   nombre: string;
   apellido: string;
